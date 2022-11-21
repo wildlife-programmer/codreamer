@@ -81,7 +81,8 @@ class GameManager extends pc.ScriptType {
     if (self) {
       this.localPlayer = instance;
       this.localPlayer.camera = this.player_camera;
-      this.player_camera.cameraController.focusEntity = instance;
+      this.localPlayer.addChild(this.player_camera);
+      
       this.app.fire("localPlayer#init", instance);
     }
   }

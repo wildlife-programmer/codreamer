@@ -1,40 +1,39 @@
 class PlayerController extends pc.ScriptType {
   initialize() {
     this.isLocalPlayer = false;
-    this.app.on("localPlayer#init", this.initLocalPlayer, this);
 
     this.rigid = this.entity.rigidbody;
+    this.model = this.entity.findByTag("model")[0];
     this.moveDelta = new pc.Vec3();
-  }
-  initLocalPlayer() {
-    this.isLocalPlayer = true;
+    this.speed = 3;
+
+    this.entity.on("move", this.onMove, this);
+    this.targetPosition = new pc.Vec3();
+
+    this.distance = new pc.Vec3();
+    this.direction = new pc.Vec3();
   }
   update(dt) {
-    if (!this.isLocalPlayer) return;
-    let forceX = 0;
-    let forceZ = 0;
+    this.distance.sub2(this.targetPosition, this.entity.getPosition());
 
-    if (this.app.keyboard.isPressed(pc.KEY_W)) {
-      forceZ -= 1;
-    }
-    if (this.app.keyboard.isPressed(pc.KEY_S)) {
-      forceZ += 1;
-    }
-    if (this.app.keyboard.isPressed(pc.KEY_A)) {
-      forceX -= 1;
-    }
-    if (this.app.keyboard.isPressed(pc.KEY_D)) {
-      forceX += 1;
-    }
-    if (forceX !== 0 || forceZ !== 0) {
-      const delta = this.moveDelta.set(forceX, 0, forceZ).scale(dt);
+    this.direction.copy(this.distance).normalize();
 
-      const newPos = delta.add(this.entity.getPosition());
-      this.rigid.teleport(newPos);
+    if (this.distance.length() > 0.1) {
+      this.rigid.teleport(
+        this.entity.getPosition().add(this.direction.scale(5 * dt))
+      );
     }
-
-    // .scale(0);
-    // console.log(forceX, forceZ);
+  }
+  onMove(targetPosition) {
+    this.targetPosition.copy(targetPosition);
+    this.distance.sub2(targetPosition, this.entity.getPosition());
+    if (this.distance.length() > 0.1) {
+      this.model.lookAt(
+        this.targetPosition.x,
+        this.model.getPosition().y,
+        this.targetPosition.z
+      );
+    }
   }
 }
 
