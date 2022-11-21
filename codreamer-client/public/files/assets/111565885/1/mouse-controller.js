@@ -22,8 +22,12 @@ class MouseController extends pc.ScriptType {
     const to = camera.screenToWorld(ev.x, ev.y, camera.farClip);
 
     const result = this.app.systems.rigidbody.raycastFirst(from, to);
-    console.log("raycast result", result);
+    if (result.entity.tags.has("player")) {
+      result.point.y = 0;
+    }
     this.inputTarget.fire("move", result.point);
+    const gm = this.app.gameManager;
+    gm.sendPlayerMove(result.point);
   }
 }
 

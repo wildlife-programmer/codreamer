@@ -1,6 +1,9 @@
-const OP_PLAYER_SPAWN = 1;
+const OP_WORLD_STATE = 1;
+const OP_PLAYER_SPAWN = 2;
+const OP_PLAYER_MOVE = 3;
 class GameManager extends pc.ScriptType {
   initialize() {
+    this.app.gameManager = this;
     this.app.on("nakama#init", this.nakamaInit, this);
     this.app.on("player#spawn", this.sendPlayerSpawn, this);
     this.app.on("match#join", this.matchJoin, this);
@@ -24,10 +27,8 @@ class GameManager extends pc.ScriptType {
 
   async matchJoin() {
     const result = await this.nakama.socket.rpc("match_create");
-    console.log("payload", result);
     this.match_id = result.payload;
     const match = await this.nakama.socket.joinMatch(this.match_id);
-    console.log("match");
     if (match) {
       this.app.fire("match#join_success");
       this.sendPlayerSpawn();
@@ -38,7 +39,6 @@ class GameManager extends pc.ScriptType {
     if (joins.length > 0) {
       joins.forEach((join) => {});
     }
-    console.log("onmatchpresence", joins);
   }
   onMatchData(message) {
     console.log("on match data", message);
@@ -47,8 +47,14 @@ class GameManager extends pc.ScriptType {
     const decoded_data = JSON.parse(new TextDecoder().decode(data));
 
     switch (op_code) {
+      case OP_WORLD_STATE:
+        this.onWorldState(op_code, decoded_data);
+        break;
       case OP_PLAYER_SPAWN:
         this.onPlayerSpawn(op_code, decoded_data);
+        break;
+      case OP_PLAYER_MOVE:
+        this.onPlayerMove(op_code, decoded_data);
         break;
       default:
         break;
@@ -58,15 +64,52 @@ class GameManager extends pc.ScriptType {
   sendPlayerSpawn(match_id) {
     setTimeout(async () => {
       const account = await this.getAccount();
-      console.log("account", account);
-      await this.nakama.socket.sendMatchState(
-        this.match_id,
-        OP_PLAYER_SPAWN,
-        JSON.stringify({})
-      );
+      await this.sendMatchState(OP_PLAYER_SPAWN, {});
     }, 0);
   }
 
+  sendPlayerMove(pos) {
+    setTimeout(async () => {
+      await this.sendMatchState(OP_PLAYER_MOVE, { pos: this.float2int(pos) });
+    }, 0);
+  }
+
+  float2int(pos) {
+    if (pos instanceof pc.Vec3)
+      return [
+        Math.floor(pos.x * 10),
+        Math.floor(pos.y * 10),
+        Math.floor(pos.z * 10),
+      ];
+    else return pos;
+  }
+
+  int2float(pos) {
+    if (Array.isArray(pos)) {
+      return new pc.Vec3(pos[0] / 10, pos[1] / 10, pos[2] / 10);
+    } else {
+      return pos;
+    }
+  }
+
+  async sendMatchState(op_code, data = {}) {
+    setTimeout(async () => {
+      await this.nakama.socket.sendMatchState(
+        this.match_id,
+        op_code,
+        JSON.stringify(data)
+      );
+    }, 0);
+  }
+  async onWorldState(op_code, data) {
+    const account = await this.getAccount();
+    const user_id = account.user.id;
+    const players = data.players;
+    if (players.length > 0)
+      players.forEach((player) => {
+        if (player.user_id !== user_id) this.spawnPlayer(player, false);
+      });
+  }
   async onPlayerSpawn(op_code, data) {
     const account = await this.getAccount();
     const user_id = account.user.id;
@@ -74,7 +117,14 @@ class GameManager extends pc.ScriptType {
     else this.spawnPlayer(data, false);
   }
 
+  onPlayerMove(op_code, data) {
+    const player = this.playerMap.get(data.user_id);
+    if (!player) return;
+    player.fire("move", this.int2float(data.pos));
+  }
+
   spawnPlayer(playerInfo, self) {
+    console.log("@@@@@@@@@", playerInfo);
     const instance = this.player_template.resource.instantiate();
     this.playerMap.set(playerInfo.user_id, instance);
     this._root.addChild(instance);
@@ -82,7 +132,7 @@ class GameManager extends pc.ScriptType {
       this.localPlayer = instance;
       this.localPlayer.camera = this.player_camera;
       this.localPlayer.addChild(this.player_camera);
-      
+
       this.app.fire("localPlayer#init", instance);
     }
   }
