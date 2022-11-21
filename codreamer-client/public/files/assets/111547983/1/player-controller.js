@@ -4,12 +4,12 @@ class PlayerController extends pc.ScriptType {
     this.app.on("localPlayer#init", this.initLocalPlayer, this);
 
     this.rigid = this.entity.rigidbody;
-    this.moveVector = new pc.Vec3();
+    this.moveDelta = new pc.Vec3();
   }
   initLocalPlayer() {
     this.isLocalPlayer = true;
   }
-  update() {
+  update(dt) {
     if (!this.isLocalPlayer) return;
     let forceX = 0;
     let forceZ = 0;
@@ -26,10 +26,14 @@ class PlayerController extends pc.ScriptType {
     if (this.app.keyboard.isPressed(pc.KEY_D)) {
       forceX += 1;
     }
+    if (forceX !== 0 || forceZ !== 0) {
+      const delta = this.moveDelta.set(forceX, 0, forceZ).scale(dt);
 
-    const vector = this.moveVector.set(forceX, 0, forceZ).normalize();
+      const newPos = delta.add(this.entity.getPosition());
+      this.rigid.teleport(newPos);
+    }
+
     // .scale(0);
-    this.rigid.applyForce(vector.scale(5));
     // console.log(forceX, forceZ);
   }
 }
