@@ -107,7 +107,7 @@ class GameManager extends pc.ScriptType {
     const players = data.players;
     if (players.length > 0)
       players.forEach((player) => {
-        if (player.user_id !== user_id) this.spawnPlayer(player, false);
+        if (player.user_id !== user_id) this.spawnPlayer(player.info, false);
       });
   }
   async onPlayerSpawn(op_code, data) {
@@ -124,10 +124,11 @@ class GameManager extends pc.ScriptType {
   }
 
   spawnPlayer(playerInfo, self) {
-    console.log("@@@@@@@@@", playerInfo);
     const instance = this.player_template.resource.instantiate();
     this.playerMap.set(playerInfo.user_id, instance);
     this._root.addChild(instance);
+    if (playerInfo.pos)
+      instance.fire("move", this.int2float(playerInfo.pos), true);
     if (self) {
       this.localPlayer = instance;
       this.localPlayer.camera = this.player_camera;

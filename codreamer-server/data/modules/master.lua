@@ -55,7 +55,7 @@ function M.match_join(context, dispatcher, tick, state, presences)
     nk.logger_info("presences", jsonEncode(presences))
     for _, presence in ipairs(presences) do
         local player = presence
-        player.info = {0, 0, 0}
+        player.info = {pos = {0, 0, 0}, user_id = presence.user_id}
         state.players[presence.session_id] = player
         state.player_count = state.player_count + 1;
     end

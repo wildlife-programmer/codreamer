@@ -14,17 +14,25 @@ class PlayerController extends pc.ScriptType {
     this.direction = new pc.Vec3();
   }
   update(dt) {
-    this.distance.sub2(this.targetPosition, this.entity.getPosition());
+    if (this.isMoving) {
+      this.distance.sub2(this.targetPosition, this.entity.getPosition());
 
-    this.direction.copy(this.distance).normalize();
+      this.direction.copy(this.distance).normalize();
 
-    if (this.distance.length() > 0.1) {
-      this.rigid.teleport(
-        this.entity.getPosition().add(this.direction.scale(5 * dt))
-      );
+      if (this.distance.length() > 0.1) {
+        this.rigid.teleport(
+          this.entity.getPosition().add(this.direction.scale(5 * dt))
+        );
+      }
     }
   }
-  onMove(targetPosition) {
+  onMove(targetPosition, ext) {
+    if (ext) {
+      this.targetPosition.copy(targetPosition);
+      this.rigid.teleport(targetPosition);
+      return;
+    }
+    this.isMoving = true;
     this.targetPosition.copy(targetPosition);
     this.distance.sub2(targetPosition, this.entity.getPosition());
     if (this.distance.length() > 0.1) {
