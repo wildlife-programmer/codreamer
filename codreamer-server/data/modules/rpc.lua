@@ -1,5 +1,11 @@
 local nk = require("nakama")
--- require("cached_nk")
+local jsonEncode = nk.json_encode
+local jsonDecode = nk.json_decode
+
+local matchList = nk.match_list
+local matchCreate = nk.match_create
+
+local registerRpc = nk.register_rpc
 
 local function match_join(context, payload)
     local packed = {success = true}

@@ -11,6 +11,7 @@ class GameManager extends pc.ScriptType {
     });
 
     this._root = this.app.root;
+    this.playerMap = new Map();
   }
   update() {}
 
@@ -43,7 +44,7 @@ class GameManager extends pc.ScriptType {
     console.log("on match data", message);
     const op_code = message.op_code;
     const data = message.data;
-    const decoded_data = new TextDecoder().decode(data);
+    const decoded_data = JSON.parse(new TextDecoder().decode(data));
 
     switch (op_code) {
       case OP_PLAYER_SPAWN:
@@ -69,10 +70,18 @@ class GameManager extends pc.ScriptType {
   async onPlayerSpawn(op_code, data) {
     const account = await this.getAccount();
     const user_id = account.user.id;
-    if()
-    console.log("account", account);
+    if (data.user_id === user_id) this.spawnPlayer(data, true);
+    else this.spawnPlayer(data, false);
+  }
+
+  spawnPlayer(playerInfo, self) {
     const instance = this.player_template.resource.instantiate();
+    this.playerMap.set(playerInfo.user_id, instance);
     this._root.addChild(instance);
+    if (self) {
+      this.localPlayer = instance;
+      this.app.fire("localPlayer#init", instance);
+    }
   }
   async getAccount() {
     const account = await this.nakama.client.getAccount(this.nakama.session);

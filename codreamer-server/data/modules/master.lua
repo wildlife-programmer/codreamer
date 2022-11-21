@@ -10,6 +10,7 @@ local function on_player_spawn(context, dispatcher, tick, state, message)
     if not player then return end
 
     local decoded = jsonDecode(message.data);
+    decoded["user_id"] = player.user_id
     print("on player spawn", jsonEncode(decoded))
     dispatcher.broadcast_message_deferred(OP_PLAYER_SPAWN, jsonEncode(decoded),
                                           nil)
