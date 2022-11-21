@@ -21,7 +21,10 @@ class MouseController extends pc.ScriptType {
     const from = camera.screenToWorld(ev.x, ev.y, camera.nearClip);
     const to = camera.screenToWorld(ev.x, ev.y, camera.farClip);
 
-    const result = this.app.systems.rigidbody.raycastFirst(from, to);
+    const results = this.app.systems.rigidbody.raycastAll(from, to);
+    results.filter((el) => !el.entity.tags.has("player"));
+    if (results.length <= 0) return;
+    const result = results[0];
     if (result.entity.tags.has("player")) {
       result.point.y = 0;
     }
