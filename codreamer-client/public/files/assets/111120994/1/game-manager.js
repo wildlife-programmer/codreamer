@@ -7,10 +7,13 @@ class GameManager extends pc.ScriptType {
     this.app.on("nakama#init", this.nakamaInit, this);
     this.app.on("player#spawn", this.sendPlayerSpawn, this);
     this.app.on("match#join", this.matchJoin, this);
+    this.app.on("chat#send", this.onSendChat, this);
+
     this.on("destroy", () => {
       this.app.off("nakama#init", this.nakamaInit, this);
       this.app.off("player#spawn", this.sendPlayerSpawn, this);
       this.app.off("match#join", this.matchJoin, this);
+      this.app.off("chat#send", this.onSendChat, this);
     });
 
     this._root = this.app.root;
@@ -32,13 +35,36 @@ class GameManager extends pc.ScriptType {
     if (match) {
       this.app.fire("match#join_success");
       this.sendPlayerSpawn();
+      const chat = await this.nakama.socket.joinChat(
+        this.match_id,
+        1,
+        false,
+        false
+      );
+      if (chat) {
+        this.nakama.socket.onchannelmessage = this.onChannelMessage.bind(this);
+        this.nakama.socket.onchannelpresence =
+          this.onChannelPresence.bind(this);
+      }
     }
+  }
+
+  onSendChat(message) {
+    const messageData = { message: message };
+    this.nakama.socket.writeChatMessage(`2...${this.match_id}`, messageData);
   }
 
   onMatchPresence(joins) {
     if (joins.length > 0) {
       joins.forEach((join) => {});
     }
+  }
+  onChannelMessage(message) {
+    this.app.fire("chat#get", message);
+  }
+
+  onChannelPresence(message) {
+    console.log("onchannelPresence", message);
   }
   onMatchData(message) {
     const op_code = message.op_code;

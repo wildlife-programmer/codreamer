@@ -32,7 +32,7 @@ function App() {
         {UIState === 1 && (
           <LobbyView app={app} setState={setUIState} setMatch={setMatch} />
         )}
-        {UIState === 2 && <MainView />}
+        {UIState === 2 && <MainView app={app} />}
       </div>
     )
   );
