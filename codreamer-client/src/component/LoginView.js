@@ -20,7 +20,11 @@ const LoginView = ({ setState, app }) => {
         serverkey: process.env.REACT_APP_KEY,
         useSSL: useSSL,
       });
-      const response = await nakama.authenticateCustom(inputValue);
+      const response = await nakama.client.authenticateCustom(
+        inputValue,
+        true,
+        inputValue
+      );
       if (response) {
         await nakama.connect(useSSL, verbose, protobuf);
         app.fire("nakama#init", nakama);
