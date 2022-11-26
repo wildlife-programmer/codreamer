@@ -14,13 +14,12 @@ const LoginView = ({ setState, app }) => {
       let useSSL = false;
       let verbose = false;
       let protobuf = true;
-      // nakama.initialize({
-      //   host: host,
-      //   port: port,
-      //   serverkey: serverkey,
-      //   useSSL: useSSL,
-      // });
-      nakama.initialize();
+      nakama.initialize({
+        host: process.env.REACT_APP_HOST,
+        port: process.env.REACT_APP_PORT,
+        serverkey: process.env.REACT_APP_KEY,
+        useSSL: useSSL,
+      });
       const response = await nakama.authenticateCustom(inputValue);
       if (response) {
         await nakama.connect(useSSL, verbose, protobuf);
