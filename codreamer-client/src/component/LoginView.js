@@ -11,7 +11,7 @@ const LoginView = ({ setState, app }) => {
     if (inputValue.length <= 0) return;
     try {
       const nakama = (window.nakama = new Nakama());
-      let useSSL = false;
+      let useSSL = process.env.NODE_ENV === "production" ? true : false;
       let verbose = false;
       let protobuf = true;
       nakama.initialize({
