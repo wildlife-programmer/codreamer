@@ -11,9 +11,19 @@ const LoginView = ({ setState, app }) => {
     if (inputValue.length <= 0) return;
     try {
       const nakama = (window.nakama = new Nakama());
+      let useSSL = false;
+      let verbose = false;
+      let protobuf = true;
+      // nakama.initialize({
+      //   host: host,
+      //   port: port,
+      //   serverkey: serverkey,
+      //   useSSL: useSSL,
+      // });
+      nakama.initialize();
       const response = await nakama.authenticateCustom(inputValue);
-      console.log("reseponse", response);
       if (response) {
+        await nakama.connect(useSSL, verbose, protobuf);
         app.fire("nakama#init", nakama);
         setState(1);
       }

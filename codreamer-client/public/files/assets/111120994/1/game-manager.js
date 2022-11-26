@@ -41,7 +41,6 @@ class GameManager extends pc.ScriptType {
     }
   }
   onMatchData(message) {
-    console.log("on match data", message);
     const op_code = message.op_code;
     const data = message.data;
     const decoded_data = JSON.parse(new TextDecoder().decode(data));

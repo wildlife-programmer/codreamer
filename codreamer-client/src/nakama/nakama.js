@@ -2,15 +2,45 @@ import { Client } from "@heroiclabs/nakama-js";
 
 class Nakama {
   constructor() {
-    this.client = new Client("defaultkey", "127.0.0.1", 7350);
-    this.socket = this.client.createSocket();
+    this.client = null;
+    this.socket = null;
     this.session = null;
+  }
+
+  initialize(config) {
+    if (!config) {
+      config = {
+        host: "localhost",
+        port: "7350",
+        serverkey: "defaultkey",
+        useSSL: false,
+      };
+    }
+    this.client = new Client(
+      config.serverkey,
+      config.host,
+      config.port,
+      config.useSSL,
+      20000
+    );
   }
 
   async authenticateCustom(username) {
     this.session = await this.client.authenticateCustom(username);
-    const response = await this.socket.connect(this.session, true);
-    return response;
+    return this.session;
+  }
+
+  async connect(useSSL, verbose, protobuf, cb) {
+    this.connectParams = {
+      useSSL,
+      verbose,
+      protobuf,
+      cb: cb,
+    };
+    try {
+      this.socket = this.client.createSocket(useSSL, verbose);
+      await this.socket.connect(this.session, true);
+    } catch (err) {}
   }
 }
 
