@@ -64,7 +64,7 @@ class GameManager extends pc.ScriptType {
   }
 
   onChannelPresence(message) {
-    console.log("onchannelPresence", message);
+    // console.log("onchannelPresence", message);
   }
   onMatchData(message) {
     const op_code = message.op_code;
