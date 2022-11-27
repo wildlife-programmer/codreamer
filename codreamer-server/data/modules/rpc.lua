@@ -11,6 +11,8 @@ local storageWrite = nk.storage_write
 local registerRpc = nk.register_rpc
 local runOnce = nk.run_once
 
+local httpRequest = nk.http_request
+
 local function match_join(context, payload)
     local packed = {success = true}
     return jsonEncode({packed})
@@ -36,6 +38,16 @@ local function match_create(context, payload)
     return match_id
 end
 
+local function get_spaces(context, payload)
+    local limit = 100
+    local authoritative = true
+    local label = nil
+    local min_size = 0
+    local max_size = 10000
+    local matches = matchList(limit, authoritative, label, min_size, max_size)
+    return jsonEncode(matches)
+end
+
 local function create_storage()
     local config_1 = {{collection = "guestbook", key = "guestbook"}}
     local objects_1 = storageRead(config_1);
@@ -45,15 +57,29 @@ local function create_storage()
     end
 end
 
+local function initialize()
+    create_storage()
+    match_create()
+end
+
 local function get_guestbook()
     local config_1 = {{collection = "guestbook", key = "guestbook"}}
     local objects_1 = storageRead(config_1);
     if #objects_1 > 0 then return jsonEncode(objects_1[1].value) end
 end
 
-runOnce(create_storage)
+-- local function authenticate_before(context, payload)
+--     local account = payload.account
+--     if account == nil then return end
+--     local user_id = payload.account.id
+--     return payload -- important!
+-- end
+
+runOnce(initialize)
 
 registerRpc(match_join, "match_join")
 registerRpc(match_create, "match_create")
+registerRpc(get_spaces, "get_spaces")
 registerRpc(get_guestbook, "get_guestbook")
 
+-- nk.register_req_before(authenticate_before, "AuthenticateCustom")

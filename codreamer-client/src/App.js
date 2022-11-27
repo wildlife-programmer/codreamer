@@ -5,6 +5,7 @@ import MainView from "./component/MainView";
 import "./App.css";
 function App() {
   const [app, setApp] = useState();
+  const [nakama, setNakama] = useState();
   const [loaded, setLoaded] = useState(false);
   const [UIState, setUIState] = useState(0);
   const [match, setMatch] = useState();
@@ -28,9 +29,20 @@ function App() {
   return (
     loaded && (
       <div className="App">
-        {UIState === 0 && <LoginView app={app} setState={setUIState} />}
+        {UIState === 0 && (
+          <div className="container">
+            <LoginView setNakama={setNakama} app={app} setState={setUIState} />
+          </div>
+        )}
         {UIState === 1 && (
-          <LobbyView app={app} setState={setUIState} setMatch={setMatch} />
+          <div className="container">
+            <LobbyView
+              nakama={nakama}
+              app={app}
+              setState={setUIState}
+              setMatch={setMatch}
+            />
+          </div>
         )}
         {UIState === 2 && <MainView app={app} />}
       </div>
