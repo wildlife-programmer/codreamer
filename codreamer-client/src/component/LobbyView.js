@@ -95,7 +95,7 @@ const LobbyView = ({ app, nakama, setState }) => {
           {/* <div>
             <button onClick={tryCreateMatch}>방 만들기</button>
           </div> */}
-          <div style={{ border: "1px solid red" }} className="space_body">
+          <div className="space_body">
             {spaces.length > 0 ? (
               spaces.map((space, index) => (
                 <div
