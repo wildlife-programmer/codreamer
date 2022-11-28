@@ -5,7 +5,7 @@ class PlayerController extends pc.ScriptType {
     this.rigid = this.entity.rigidbody;
     this.model = this.entity.findByTag("model")[0];
     this.moveDelta = new pc.Vec3();
-    this.speed = 3;
+    this.speed = 10;
 
     this.entity.on("move", this.onMove, this);
     this.targetPosition = new pc.Vec3();
@@ -21,7 +21,7 @@ class PlayerController extends pc.ScriptType {
 
       if (this.distance.length() > 0.1) {
         this.rigid.teleport(
-          this.entity.getPosition().add(this.direction.scale(5 * dt))
+          this.entity.getPosition().add(this.direction.scale(this.speed * dt))
         );
       }
     }

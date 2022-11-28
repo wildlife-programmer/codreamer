@@ -144,7 +144,8 @@ class GameManager extends pc.ScriptType {
 
   onPlayerMove(op_code, data) {
     const player = this.playerMap.get(data.user_id);
-    if (!player) return;
+
+    if (!player || player === this.localPlayer) return;
     player.fire("move", this.int2float(data.pos));
   }
 

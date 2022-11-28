@@ -26,12 +26,11 @@ class CameraController extends pc.ScriptType {
 
     this.entity.setPosition(this.getWorldPoint());
     this.entity.lookAt(originEntity.getPosition());
-    this.mouseSpeed = 4;
+    this.mouseSpeed = 6;
   }
 
   onMouseMove(e) {
     if (!this.isCameraMoving) return;
-    console.log(1)
     const mouseController = this.app.mouseController;
     if (!mouseController.isCameraMoving) mouseController.isCameraMoving = true;
     // if (pc.Mouse.isPointerLocked()) {
