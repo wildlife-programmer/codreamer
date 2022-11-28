@@ -156,8 +156,9 @@ class GameManager extends pc.ScriptType {
       instance.fire("move", this.int2float(playerInfo.pos), true);
     if (self) {
       this.localPlayer = instance;
-      this.localPlayer.camera = this.player_camera;
-      this.localPlayer.addChild(this.player_camera);
+      const camera = this.localPlayer.findByTag("camera")[0];
+      this.localPlayer.camera = camera;
+      camera.enabled = true;
 
       this.app.fire("localPlayer#init", instance);
     }
@@ -170,7 +171,6 @@ class GameManager extends pc.ScriptType {
 
 pc.registerScript(GameManager, "gameManager");
 
-GameManager.attributes.add("player_camera", { type: "entity" });
 GameManager.attributes.add("player_template", {
   type: "asset",
   assetType: "template",
