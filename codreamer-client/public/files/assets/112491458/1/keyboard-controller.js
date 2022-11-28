@@ -6,6 +6,7 @@ class KeyboardController extends pc.ScriptType {
     this.playerCamera = null;
     this.cameraScript = null;
     this.speed = 0.1;
+    this.move_able = true;
 
     app.on("localPlayer#init", this.initInputTarget, this);
 
@@ -13,13 +14,20 @@ class KeyboardController extends pc.ScriptType {
       app.keyboard.on("keydown", this.onKeyDown, this);
     }
 
+    app.on("move#disable", this.handleMove, this);
+    app.on("move#able", this.handleMove, this);
+
     this.on("destroy", () => {
+      app.off("move#disable", this.handleMove, this);
       app.off("localPlayer#init", this.initInputTarget, this);
 
       if (app.keyboard) {
         app.keyboard.off("keydown", this.onKeyDown, this);
       }
     });
+  }
+  handleMove(bool) {
+    this.move_able = bool;
   }
   initInputTarget(localPlayer) {
     this.inputTarget = localPlayer;
@@ -28,7 +36,7 @@ class KeyboardController extends pc.ScriptType {
   }
 
   update(dt) {
-    if (!this.inputTarget) return;
+    if (!this.inputTarget || !this.move_able) return;
     const app = this.app;
     const worldDirection = KeyboardController.worldDirection;
     worldDirection.set(0, 0, 0);
@@ -41,18 +49,10 @@ class KeyboardController extends pc.ScriptType {
     let x = 0;
     let z = 0;
 
-    if (app.keyboard.isPressed(pc.KEY_A)) {
-      x -= 1;
-    }
-    if (app.keyboard.isPressed(pc.KEY_D)) {
-      x += 1;
-    }
-    if (app.keyboard.isPressed(pc.KEY_W)) {
-      z += 1;
-    }
-    if (app.keyboard.isPressed(pc.KEY_S)) {
-      z -= 1;
-    }
+    if (app.keyboard.isPressed(pc.KEY_A)) x -= 1;
+    if (app.keyboard.isPressed(pc.KEY_D)) x += 1;
+    if (app.keyboard.isPressed(pc.KEY_W)) z += 1;
+    if (app.keyboard.isPressed(pc.KEY_S)) z -= 1;
 
     if (x !== 0 || z !== 0) {
       worldDirection.add(tempDirection.copy(forward).mulScalar(z));

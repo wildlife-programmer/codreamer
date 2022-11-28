@@ -4,13 +4,13 @@ class MouseController extends pc.ScriptType {
     app.mouseController = this;
     this.inputTarget = null;
     app.on("localPlayer#init", this.initInputTarget, this);
-    // app.mouse.on(pc.EVENT_MOUSEUP, this.onMouseUp, this);
+    app.mouse.on(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
 
     this.isCameraMoving = false;
   }
 
-  onMouseUp(ev) {
-    if (!this.inputTarget || this.isCameraMoving) return;
+  onMouseDown(ev) {
+    if (!this.inputTarget) return;
 
     this.raycast(ev);
   }
@@ -25,16 +25,17 @@ class MouseController extends pc.ScriptType {
     const from = camera.screenToWorld(ev.x, ev.y, camera.nearClip);
     const to = camera.screenToWorld(ev.x, ev.y, camera.farClip);
 
-    const results = this.app.systems.rigidbody.raycastAll(from, to);
-    results.filter((el) => !el.entity.tags.has("player"));
-    if (results.length <= 0) return;
-    const result = results[0];
-    if (result.entity.tags.has("player")) {
-      result.point.y = 0;
+    const result = this.app.systems.rigidbody.raycastFirst(from, to);
+    if (result) {
+      if (result.entity.tags.has("guestbook")) {
+        this.app.fire("guestbook", true);
+        this.app.fire("move#disable", false);
+      }
+      if (result.entity.tags.has("contributor")) {
+      }
+      if (result.entity.tags.has("proposal")) {
+      }
     }
-    this.inputTarget.fire("move", result.point);
-    const gm = this.app.gameManager;
-    gm.sendPlayerMove(result.point);
   }
 }
 

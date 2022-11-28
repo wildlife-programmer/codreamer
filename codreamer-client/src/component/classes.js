@@ -49,10 +49,10 @@ class FallingStar {
   update(canvas, ctx) {
     this.y += this.weight;
     this.x += this.speedX;
-    this.weight += 0.03;
+    this.weight += 0.005;
 
     if (this.speedX > 0) this.rotate -= 1;
-    else this.rotate += 1;
+    else this.rotate += 0.11;
 
     if (this.y > canvas.height) {
       this.y = 0;
@@ -80,12 +80,12 @@ class FallingStar {
     this.title_top = title_top;
     this.content_top = content_top;
   }
-  drawShape(canvas, ctx, x, y, rotate, inset = 0.5, n = 6) {
+  drawShape(canvas, ctx, x, y, rotate, inset = 0.5, n = 5) {
     ctx.strokeStyle = "rgba(255, 237, 44, 1)";
     ctx.beginPath();
     ctx.save();
     ctx.translate(x, y);
-    ctx.rotate(rotate);
+    // ctx.rotate(rotate);
     ctx.moveTo(0, 0 - this.radius);
 
     for (let i = 0; i < n; i++) {

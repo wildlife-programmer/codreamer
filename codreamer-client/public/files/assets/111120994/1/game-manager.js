@@ -3,20 +3,21 @@ const OP_PLAYER_SPAWN = 2;
 const OP_PLAYER_MOVE = 3;
 class GameManager extends pc.ScriptType {
   initialize() {
-    this.app.gameManager = this;
-    this.app.on("nakama#init", this.nakamaInit, this);
-    this.app.on("player#spawn", this.sendPlayerSpawn, this);
-    this.app.on("match#join", this.matchJoin, this);
-    this.app.on("chat#send", this.onSendChat, this);
+    const app = this.app;
+    app.gameManager = this;
+    app.on("nakama#init", this.nakamaInit, this);
+    app.on("player#spawn", this.sendPlayerSpawn, this);
+    app.on("match#join", this.matchJoin, this);
+    app.on("chat#send", this.onSendChat, this);
 
     this.on("destroy", () => {
-      this.app.off("nakama#init", this.nakamaInit, this);
-      this.app.off("player#spawn", this.sendPlayerSpawn, this);
-      this.app.off("match#join", this.matchJoin, this);
-      this.app.off("chat#send", this.onSendChat, this);
+      app.off("nakama#init", this.nakamaInit, this);
+      app.off("player#spawn", this.sendPlayerSpawn, this);
+      app.off("match#join", this.matchJoin, this);
+      app.off("chat#send", this.onSendChat, this);
     });
 
-    this._root = this.app.root;
+    this._root = app.root;
     this.playerMap = new Map();
   }
   update() {}
