@@ -44,7 +44,7 @@ function App() {
             />
           </div>
         )}
-        {UIState === 2 && <MainView app={app} />}
+        {UIState === 2 && <MainView nakama={nakama} app={app} />}
       </div>
     )
   );

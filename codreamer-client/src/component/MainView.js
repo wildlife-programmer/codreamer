@@ -2,12 +2,12 @@ import Chat from "./Chat";
 import GithubInfo from "./GithubInfo";
 import GuestBook from "./GuestBook";
 
-const MainView = ({ app, setState }) => {
+const MainView = ({ nakama, app, setState }) => {
   return (
     <div>
       <GithubInfo />
       <Chat app={app} setState={setState} />
-      <GuestBook app={app} />
+      <GuestBook nakama={nakama} app={app} />
     </div>
   );
 };
