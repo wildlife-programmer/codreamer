@@ -98,7 +98,7 @@ const LoginView = ({ setState, app, setNakama }) => {
             className="button_github_login"
             onClick={() => {
               const GITHUB_LOGIN_URL =
-                "https://github.com/login/oauth/authorize?client_id=be22490f08d955474cb4";
+                `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}`;
               window.location.assign(GITHUB_LOGIN_URL);
             }}
           >

@@ -21,7 +21,7 @@ const LobbyView = ({ app, nakama, setState }) => {
     canvas.height = window.innerHeight;
     if (!canvas) return;
     const titleRect = title.getBoundingClientRect();
-    console.log(title, titleRect);
+    // console.log(title, titleRect);
     const t = {
       x: titleRect.left,
       y: titleRect.top,
