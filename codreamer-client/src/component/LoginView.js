@@ -134,7 +134,9 @@ const LoginView = ({ setState, app, setNakama }) => {
             <GitHubIcon style={{ marginRight: 8 }} />
             Github Login
           </div>
-          <button onClick={guestLogin}>게스트 로그인</button>
+          {process.env !== "production" && (
+            <button onClick={guestLogin}>게스트 로그인</button>
+          )}
         </div>
       </div>
       <canvas className="login_canvas" ref={loginCanvas}></canvas>
