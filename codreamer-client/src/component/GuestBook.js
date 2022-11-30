@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import "../App.css";
+import PersonIcon from "@mui/icons-material/Person";
+import CancelIcon from "@mui/icons-material/Cancel";
+import MessageIcon from "@mui/icons-material/Message";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 const GuestBook = ({ app, nakama }) => {
   const [open, setOpen] = useState(false);
 
@@ -69,7 +73,7 @@ const GuestBook = ({ app, nakama }) => {
     <div className={open ? "guestbook_on" : "guestbook_off"}>
       <div className="guestbook_container">
         <div>
-          <span>이름</span>
+          <PersonIcon className="guestbook_icon" />
           <input
             disabled={!open}
             className="guestbook_name"
@@ -79,7 +83,7 @@ const GuestBook = ({ app, nakama }) => {
           ></input>
         </div>
         <div>
-          <span>메세지</span>
+          <MessageIcon className="guestbook_icon" />
           <textarea
             disabled={!open}
             className="guestbook_message"
@@ -88,14 +92,10 @@ const GuestBook = ({ app, nakama }) => {
             placeholder="메세지"
           ></textarea>
         </div>
-        <div className="guestbook_button">
-          <button onClick={handleAdd} className="guestbook_send">
-            남기기
-          </button>
-          <button onClick={handleClose} className="guestbook_close">
-            닫기
-          </button>
-        </div>
+        <FileUploadIcon onClick={handleAdd} className="guestbook_send" />
+        {open && (
+          <CancelIcon onClick={handleClose} className="guestbook_close" />
+        )}
       </div>
     </div>
   );

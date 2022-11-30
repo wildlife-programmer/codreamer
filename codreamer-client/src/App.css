@@ -15,6 +15,11 @@ textarea {
   user-select: auto;
   outline: none;
   border: none;
+  background-color: #fff;
+  color: #000;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
 }
 h1,
 h2,
@@ -97,19 +102,9 @@ h6 {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
 }
 
-.chat_button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 60px;
-  height: 60px;
-  background-color: #fff;
-}
 .chat_on,
 .chat_off {
   position: absolute;
@@ -144,6 +139,32 @@ h6 {
   margin-bottom: 8px;
 }
 
+.chat_input {
+  padding: 8px 12px;
+  color: var(--color-purple-primary);
+  font-weight: bold;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  border: 2px solid var(--color-purple-primary);
+}
+.chat_input::placeholder {
+  color: var(--color-purple-primary);
+  font-weight: bold;
+  opacity: 0.5;
+  letter-spacing: 0.5px;
+}
+.chat_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-left: 4px;
+  padding: 4px;
+  border: 2px solid var(--color-purple-primary);
+  background-color: var(--color-yellow-primary);
+}
 /* LOBBY VIEW */
 
 .lobby_canvas {
@@ -238,35 +259,122 @@ h6 {
   width: 20%;
   margin-right: 4px;
 }
-.guestbook_name {
-  flex: 1;
-  border: 1px solid var(--color-purple-primary);
-  border-radius: 4px;
-  padding: 4px;
+.guestbook_icon {
+  margin-right: 4px;
 }
+.guestbook_name,
 .guestbook_message {
   flex: 1;
-  border: 1px solid var(--color-purple-primary);
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: var(--color-purple-primary);
+  border: 2px solid var(--color-purple-primary);
   border-radius: 4px;
-  padding: 4px;
+  padding: 8px;
+}
+.guestbook_name::placeholder,
+.guestbook_message::placeholder {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: var(--color-purple-primary);
+  opacity: 0.6;
+}
+.guestbook_message {
   resize: none;
 }
-.guestbook_button {
-  display: flex;
-}
 .guestbook_send {
-  flex: 1;
+  min-width: 32px;
+  min-height: 32px;
+  margin-left: 4px;
+  padding: 4px;
   color: var(--color-purple-primary);
   font-weight: bold;
-  background-color: #ffd800;
   border-radius: 4px;
-  padding: 8px 4px;
+  background-color: var(--color-yellow-primary);
+  border: 2px solid var(--color-purple-primary);
 }
 .guestbook_close {
-  width: 60px;
-  border-radius: 4px;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   margin-left: 4px;
-  background-color: var(--color-purple-secondary);
+  background-color: var(--color-purple-primary);
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Github */
+
+.github_icon {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  color: #fff;
+}
+
+.github_on,
+.github_off {
+  position: absolute;
+  left: 50%;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.github_on {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.github_off {
+  top: 100%;
+  transform: translate(-50%, 0);
+}
+.github_connect {
+  display: flex;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid var(--color-purple-primary);
+  background-color: #fff;
+}
+.github_input {
+  padding: 8px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: var(--color-purple-primary);
+  border-radius: 4px;
+  border: 2px solid var(--color-purple-primary);
+}
+.github_input::placeholder {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: var(--color-purple-primary);
+  opacity: 0.6;
+}
+
+.github_button {
+  min-width: 32px;
+  min-height: 32px;
+  margin-left: 4px;
+  padding: 4px;
+  color: var(--color-purple-primary);
+  font-weight: bold;
+  border-radius: 4px;
+  background-color: var(--color-yellow-primary);
+  border: 2px solid var(--color-purple-primary);
+}
+
+.github_close {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-left: 4px;
+  background-color: var(--color-purple-primary);
   color: #fff;
   font-weight: bold;
 }

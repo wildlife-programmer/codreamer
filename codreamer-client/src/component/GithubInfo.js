@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Octokit } from "@octokit/core";
-const GithubInfo = () => {
+import GitHubIcon from "@mui/icons-material/GitHub";
+import CancelIcon from "@mui/icons-material/Cancel";
+import DownloadIcon from "@mui/icons-material/Download";
+const GithubInfo = ({ app }) => {
+  const [open, setOpen] = useState(false);
   const [linked, setLinked] = useState(false);
   const [username, setUsername] = useState("");
   const [totalCommitCount, setTotalCommitCount] = useState(0);
@@ -38,30 +42,38 @@ const GithubInfo = () => {
   };
   return (
     <>
-      {linked ? (
-        <>
-          <span style={{ backgroundColor: "#fff" }}>ID: {username}</span>
-          <span style={{ backgroundColor: "#fff" }}>
-            내 커밋 횟수: {commitCount}
-          </span>
-          <span>총 커밋 횟수: {totalCommitCount}</span>
-        </>
-      ) : (
-        <>
-          <div>GithubInfo</div>
-          <div>
-            <span style={{ backgroundColor: "#fff" }}>깃허브 연동하기</span>
-            <div>
-              <input
-                value={PAT}
-                onChange={handlePAT}
-                placeholder="내 PAT"
-              ></input>
-              <button onClick={requestGithubUserInfo}>정보 불러오기</button>
-            </div>
+      <div className="github_icon" onClick={() => setOpen(true)}>
+        <GitHubIcon />
+      </div>
+      <div className={open ? "github_on" : "github_off"}>
+        {open && (
+          <CancelIcon className="github_close" onClick={() => setOpen(false)} />
+        )}
+        {linked ? (
+          <>
+            <span style={{ backgroundColor: "#fff" }}>ID: {username}</span>
+            <span style={{ backgroundColor: "#fff" }}>
+              내 커밋 횟수: {commitCount}
+            </span>
+            <span>총 커밋 횟수: {totalCommitCount}</span>
+          </>
+        ) : (
+          <div className="github_connect">
+            <input
+              onFocus={() => app.fire("move#disable", false)}
+              onBlur={() => app.fire("move#able", true)}
+              className="github_input"
+              value={PAT}
+              onChange={handlePAT}
+              placeholder="내 PAT"
+            ></input>
+            <DownloadIcon
+              className="github_button"
+              onClick={requestGithubUserInfo}
+            />
           </div>
-        </>
-      )}
+        )}
+      </div>
     </>
   );
 };

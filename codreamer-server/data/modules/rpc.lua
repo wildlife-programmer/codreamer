@@ -88,7 +88,8 @@ local function add_guest_message(context, payload)
                 {
                     name = decoded["name"],
                     message = decoded["message"],
-                    date = date
+                    date = date,
+                    create_time = osTime() + 32400
                 }
             }
         }
@@ -97,7 +98,8 @@ local function add_guest_message(context, payload)
         tInsert(messages, {
             name = decoded["name"],
             message = decoded["message"],
-            date = date
+            date = date,
+            create_time = osTime() + 32400
         })
         storage_config[1].value = {messages = messages}
     end

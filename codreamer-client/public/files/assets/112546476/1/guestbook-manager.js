@@ -10,7 +10,9 @@ class GuestbookManager extends pc.ScriptType {
     });
   }
   getGuestBook(data) {
-    const guestbook = data.reverse();
+    const guestbook = data.sort((a, b) => {
+      return b.create_time - a.create_time;
+    });
     let current_page;
     if (guestbook.length > 8) current_page = guestbook.slice(0, 8);
     else current_page = guestbook;
