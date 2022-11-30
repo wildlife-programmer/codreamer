@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Nakama from "../nakama/nakama";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Dot } from "./classes";
 
 const LoginView = ({ setState, app, setNakama }) => {
   const loginCanvas = useRef();
+  const [dots, setDots] = useState([]);
+  const [ctx, setCtx] = useState();
   const tryAuth = async (code) => {
     try {
       const nakama = new Nakama();
@@ -58,23 +60,9 @@ const LoginView = ({ setState, app, setNakama }) => {
       console.log("err", err);
     }
   };
-  const initCanvas = () => {
+  const animate = (c, a, d) => {
     const canvas = loginCanvas.current;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-
-    const dots = [];
-
-    for (let i = 0; i < 100; i++) {
-      const randomX = Math.random() * window.innerWidth;
-      const randomY = Math.random() * window.innerHeight;
-      const dot = new Dot(randomX, randomY);
-      dots.push(dot);
-    }
-
-    const animate = () => {
+    if (canvas && ctx) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       let opacity = 1;
       if (dots.length > 0) {
@@ -97,8 +85,26 @@ const LoginView = ({ setState, app, setNakama }) => {
           });
         });
       }
-      requestAnimationFrame(animate);
-    };
+    }
+    requestAnimationFrame(animate);
+  };
+  const initCanvas = () => {
+    const canvas = loginCanvas.current;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    setCtx(ctx);
+
+    const dots = [];
+
+    for (let i = 0; i < 100; i++) {
+      const randomX = Math.random() * window.innerWidth;
+      const randomY = Math.random() * window.innerHeight;
+      const dot = new Dot(randomX, randomY);
+      setDots((prev) => [...prev, dot]);
+    }
+
     window.addEventListener("resize", () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -108,7 +114,6 @@ const LoginView = ({ setState, app, setNakama }) => {
         dot.relocate(randomX, randomY);
       });
     });
-    animate();
   };
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -117,7 +122,14 @@ const LoginView = ({ setState, app, setNakama }) => {
       tryAuth(authorizationCode);
     }
     initCanvas();
+    return () => {
+      cancelAnimationFrame(animate);
+    };
   }, []);
+
+  useEffect(() => {
+    animate();
+  }, [ctx]);
 
   return (
     <>

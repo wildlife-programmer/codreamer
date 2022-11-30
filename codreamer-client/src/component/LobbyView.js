@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { FallingStar } from "./classes";
 const LobbyView = ({ app, nakama, setState }) => {
   const lobbyCanvas = useRef();
+  const titleRef = useRef();
+  const contentRef = useRef();
+  const [ctx, setCtx] = useState();
   const [spaces, setSpaces] = useState([]);
+  const [stars, setStars] = useState([]);
   const tryCreateMatch = async () => app.fire("match#join");
   const joinSpace = (match_id) => {
     app.fire("match#join", match_id);
@@ -13,13 +17,40 @@ const LobbyView = ({ app, nakama, setState }) => {
     const payload = JSON.parse(response.payload);
     setSpaces(payload);
   };
+
   const initCanvas = () => {
-    const title = document.querySelector(".space_title");
-    const content = document.querySelector(".space_body");
     const canvas = lobbyCanvas.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    setCtx(ctx);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    if (!canvas) return;
+  };
+  const animate = (c, t) => {
+    const canvas = lobbyCanvas.current;
+    if (canvas && ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (stars.length > 0) {
+        stars.forEach((star, index) => {
+          star.update(canvas, ctx);
+        });
+      }
+    }
+    requestAnimationFrame(animate);
+  };
+  useEffect(() => {
+    if (nakama) {
+      getSpaces(nakama);
+    }
+    initCanvas();
+    return () => {
+      cancelAnimationFrame(animate);
+    };
+  }, []);
+  useEffect(() => {
+    const canvas = lobbyCanvas.current;
+    const title = titleRef.current;
+    const content = contentRef.current;
     const titleRect = title.getBoundingClientRect();
     // console.log(title, titleRect);
     const t = {
@@ -35,30 +66,15 @@ const LobbyView = ({ app, nakama, setState }) => {
       width: contentRect.width,
       height: contentRect.height,
     };
-    const ctx = canvas.getContext("2d");
-    const stars = [];
 
     for (let i = 0; i < 100; i++) {
       const randomX = Math.random() * window.innerWidth;
       const randomY = Math.random() * window.innerHeight;
       const star = new FallingStar(randomX, randomY, t, c);
-      stars.push(star);
+      setStars((prev) => [...prev, star]);
     }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (stars.length > 0) {
-        stars.forEach((star, index) => {
-          star.update(canvas, ctx);
-        });
-      }
-      requestAnimationFrame(animate);
-    };
+    animate();
     window.addEventListener("resize", () => {
-      const title = document.querySelector(".space_title");
-      const content = document.querySelector(".space_body");
-      const titleRect = title.getBoundingClientRect();
-      const contentRect = content.getBoundingClientRect();
       const t = {
         x: titleRect.left,
         y: titleRect.top,
@@ -79,23 +95,18 @@ const LobbyView = ({ app, nakama, setState }) => {
         star.relocate(randomX, randomY, t, c);
       });
     });
-    animate();
-  };
-  useEffect(() => {
-    if (nakama) {
-      getSpaces(nakama);
-    }
-    initCanvas();
-  }, []);
+  }, [ctx]);
   return (
     <>
       <div className="lobbyview">
         <div className="space_list">
-          <h1 className="space_title">SPACES</h1>
+          <h1 ref={titleRef} className="space_title">
+            SPACES
+          </h1>
           {/* <div>
             <button onClick={tryCreateMatch}>방 만들기</button>
           </div> */}
-          <div className="space_body">
+          <div ref={contentRef} className="space_body">
             {spaces.length > 0 ? (
               spaces.map((space, index) => (
                 <div
