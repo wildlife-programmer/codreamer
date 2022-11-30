@@ -14,6 +14,8 @@ const Chat = ({ app }) => {
   return (
     <div className="chat_container">
       <input
+        onFocus={() => app.fire("move#disable", false)}
+        onBlur={() => app.fire("move#able", true)}
         value={chatValue}
         onChange={handleChatValue}
         placeholder="메세지를 전달해보세요"
