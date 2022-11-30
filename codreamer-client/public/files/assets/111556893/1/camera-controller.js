@@ -3,18 +3,30 @@ class CameraController extends pc.ScriptType {
     this.eulers = new pc.Vec3();
     this.touchCoords = new pc.Vec2();
 
+    this.initialized = false;
     const app = this.app;
-    app.mouse.on("mousemove", this.onMouseMove, this);
-    app.mouse.on("mousedown", this.onMouseDown, this);
-    app.mouse.on("mouseup", this.onMouseUp, this);
+    if (!app.touch) {
+      this.initialized = true;
+      app.mouse.on("mousemove", this.onMouseMove, this);
+      app.mouse.on("mousedown", this.onMouseDown, this);
+      app.mouse.on("mouseup", this.onMouseUp, this);
+    }
     const parent = this.entity.parent;
     this.rayEnd = parent.findByTag("raycast_endpoint")[0];
     this.entity.cameraController = this;
     this.focusEntity = null;
     this.position = this.entity.position;
     this.isCameraMoving = false;
+    this.mouseSpeed = 6;
+
+    this.on("destroy", () => {
+      app.mouse.off("mousemove", this.onMouseMove, this);
+      app.mouse.off("mousedown", this.onMouseDown, this);
+      app.mouse.off("mouseup", this.onMouseUp, this);
+    });
   }
   postUpdate(dt) {
+    if (!this.initialized) return;
     const originEntity = this.entity.parent;
 
     const targetY = this.eulers.x + 180;
@@ -26,7 +38,6 @@ class CameraController extends pc.ScriptType {
 
     this.entity.setPosition(this.getWorldPoint());
     this.entity.lookAt(originEntity.getPosition());
-    this.mouseSpeed = 6;
   }
 
   onMouseMove(e) {

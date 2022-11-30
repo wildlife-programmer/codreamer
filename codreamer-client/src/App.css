@@ -37,6 +37,7 @@ h6 {
   height: 100%;
   z-index: 1;
   overflow: hidden;
+  pointer-events: none;
   /* background-color: #470573; */
 }
 .container {
@@ -57,6 +58,7 @@ h6 {
   color: #fff;
   font-weight: bold;
   background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
 }
 .loginview::before {
   content: "";

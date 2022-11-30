@@ -4,7 +4,7 @@ import GuestBook from "./GuestBook";
 
 const MainView = ({ nakama, app, setState }) => {
   return (
-    <div>
+    <div style={{ pointerEvents: "auto" }}>
       <GithubInfo />
       <Chat app={app} setState={setState} />
       <GuestBook nakama={nakama} app={app} />

@@ -3,6 +3,7 @@ const OP_PLAYER_SPAWN = 2;
 const OP_PLAYER_MOVE = 3;
 class GameManager extends pc.ScriptType {
   initialize() {
+    this.app.graphicsDevice.maxPixelRatio *= 2;
     const app = this.app;
     app.gameManager = this;
     app.on("nakama#init", this.nakamaInit, this);

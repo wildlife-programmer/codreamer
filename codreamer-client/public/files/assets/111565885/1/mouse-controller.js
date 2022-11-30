@@ -4,9 +4,16 @@ class MouseController extends pc.ScriptType {
     app.mouseController = this;
     this.inputTarget = null;
     app.on("localPlayer#init", this.initInputTarget, this);
-    app.mouse.on(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
+    if (app.mouse) {
+      app.mouse.on(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
+    }
 
     this.isCameraMoving = false;
+    this.on("destroy", () => {
+      if (app.mouse) {
+        app.mouse.off(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
+      }
+    });
   }
 
   onMouseDown(ev) {
