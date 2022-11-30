@@ -64,8 +64,8 @@ const GuestBook = ({ app, nakama }) => {
     return () => {
       const name = document.querySelector(".guestbook_name");
       const message = document.querySelector(".guestbook_message");
-      name.blur();
-      message.blur();
+      name && name.blur();
+      message && message.blur();
       app.on("guestbook", handleGuestBook);
     };
   }, []);

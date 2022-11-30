@@ -11,15 +11,19 @@ class CameraController extends pc.ScriptType {
       app.mouse.on("mousedown", this.onMouseDown, this);
       app.mouse.on("mouseup", this.onMouseUp, this);
     }
-    const parent = this.entity.parent;
-    this.rayEnd = parent.findByTag("raycast_endpoint")[0];
+    this.parent = this.entity.parent;
+    this.rayEnd = this.parent.findByTag("raycast_endpoint")[0];
+    this.fpvPivot = this.parent.findByTag("first_person")[0];
     this.entity.cameraController = this;
     this.focusEntity = null;
     this.position = this.entity.position;
     this.isCameraMoving = false;
     this.mouseSpeed = 6;
 
+    this.fpv = false;
+    this.app.on("fpv", this.onFpv, this);
     this.on("destroy", () => {
+      this.app.off("fpv", this.onFpv, this);
       app.mouse.off("mousemove", this.onMouseMove, this);
       app.mouse.off("mousedown", this.onMouseDown, this);
       app.mouse.off("mouseup", this.onMouseUp, this);
@@ -37,7 +41,7 @@ class CameraController extends pc.ScriptType {
     originEntity.setEulerAngles(targetAngle);
 
     this.entity.setPosition(this.getWorldPoint());
-    this.entity.lookAt(originEntity.getPosition());
+    !this.fpv && this.entity.lookAt(originEntity.getPosition());
   }
 
   onMouseMove(e) {
@@ -64,13 +68,20 @@ class CameraController extends pc.ScriptType {
   }
 
   getWorldPoint() {
-    const app = this.app;
+    // const app = this.app;
 
-    const from = this.entity.parent.getPosition();
-    const to = this.rayEnd.getPosition();
+    // const from = this.entity.parent.getPosition();
+    const to = this.fpv
+      ? this.fpvPivot.getPosition()
+      : this.rayEnd.getPosition();
 
-    const hit = app.systems.rigidbody.raycastFirst(from, to);
-    return hit ? hit.point : to;
+    // const hit = app.systems.rigidbody.raycastFirst(from, to);
+    return to;
+  }
+
+  onFpv(bool) {
+    console.log(bool);
+    this.fpv = bool;
   }
 }
 

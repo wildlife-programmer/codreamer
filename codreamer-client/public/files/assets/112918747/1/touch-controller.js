@@ -42,6 +42,8 @@ class TouchController extends pc.ScriptType {
     this.maxRadius = 80;
     this.speed = 0.1;
     this.isCameraMoving = false;
+    this.app.on("fpv", this.onFpv, this);
+    this.fpv = false;
   }
 
   onInitInputTarget(player) {
@@ -49,6 +51,7 @@ class TouchController extends pc.ScriptType {
     this.playerCamera = player.findByTag("camera")[0];
     this.cameraScript = this.playerCamera.script.cameraController;
     const parent = this.playerCamera.parent;
+    this.fpvPivot = parent.findByTag("first_person")[0];
     this.rayEnd = parent.findByTag("raycast_endpoint")[0];
   }
   postUpdate(dt) {
@@ -62,7 +65,7 @@ class TouchController extends pc.ScriptType {
     originEntity.setEulerAngles(targetAngle);
 
     this.playerCamera.setPosition(this.getWorldPoint(this.playerCamera));
-    this.playerCamera.lookAt(originEntity.getPosition());
+    !this.fpv && this.playerCamera.lookAt(originEntity.getPosition());
   }
 
   update(dt) {
@@ -137,12 +140,15 @@ class TouchController extends pc.ScriptType {
   onRightTouchMove(e) {
     const dx = e.x - this.lastTouchPoint.x;
     const dy = e.y - this.lastTouchPoint.y;
+    console.log(dx, dy);
+    const clampX = pc.math.clamp(dx, -30, 30);
+    const clampY = pc.math.clamp(dy, -30, 30);
     if (!this.isCameraMoving) return;
     // const mouseController = this.app.mouseController;
     // if (!mouseController.isCameraMoving) mouseController.isCameraMoving = true;
     // if (pc.Mouse.isPointerLocked()) {
-    this.eulers.x -= ((this.touchSpeed * dx) / 60) % 360;
-    this.eulers.y += ((this.touchSpeed * dy) / 60) % 360;
+    this.eulers.x -= ((this.touchSpeed * clampX) / 60) % 360;
+    this.eulers.y += ((this.touchSpeed * clampY) / 60) % 360;
 
     if (this.eulers.x < 0) this.eulers.x += 360;
     if (this.eulers.y < 0) this.eulers.y += 360;
@@ -153,13 +159,14 @@ class TouchController extends pc.ScriptType {
     this.isCameraMoving = false;
   }
   getWorldPoint(camera) {
-    const app = this.app;
+    const to = this.fpv
+      ? this.fpvPivot.getPosition()
+      : this.rayEnd.getPosition();
 
-    const from = camera.parent.getPosition();
-    const to = this.rayEnd.getPosition();
-
-    const hit = app.systems.rigidbody.raycastFirst(from, to);
-    return hit ? hit.point : to;
+    return to;
+  }
+  onFpv(bool) {
+    this.fpv = bool;
   }
 }
 TouchController.worldDirection = new pc.Vec3();
