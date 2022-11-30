@@ -29,13 +29,11 @@ const GuestBook = ({ app, nakama }) => {
   const getGuestBook = async () => {
     const result = await nakama.socket.rpc("get_guestbook");
     const payload = JSON.parse(result.payload);
-    console.log(payload);
     const temp = [];
     if (payload.length > 0) {
       payload.forEach((storage) => {
         const value = JSON.parse(storage.value);
         const messages = value.messages;
-        console.log("value", value);
         messages.forEach((message) => temp.push(message));
       });
     }
@@ -52,10 +50,12 @@ const GuestBook = ({ app, nakama }) => {
     const payload = JSON.parse(result.payload);
     if (payload.success) {
       getGuestBook();
+      setName("");
+      setMessage("");
     }
-    console.log("result", result);
   };
   useEffect(() => {
+    getGuestBook();
     app.on("guestbook", handleGuestBook);
     return () => {
       const name = document.querySelector(".guestbook_name");

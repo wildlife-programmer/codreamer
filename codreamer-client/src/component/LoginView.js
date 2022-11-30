@@ -28,6 +28,36 @@ const LoginView = ({ setState, app, setNakama }) => {
       console.log("err", err);
     }
   };
+  const generateid = (L) =>
+    [...Array(L)]
+      .map(() => {
+        return Math.random().toString(36)[3];
+      })
+      .join("");
+
+  const guestLogin = async () => {
+    try {
+      const nakama = new Nakama();
+      let useSSL = process.env.NODE_ENV === "production" ? true : false;
+      let verbose = false;
+      let protobuf = true;
+      nakama.initialize({
+        host: process.env.REACT_APP_HOST,
+        port: process.env.REACT_APP_PORT,
+        serverkey: process.env.REACT_APP_KEY,
+        useSSL: useSSL,
+      });
+      const response = await nakama.authenticateCustom(generateid(12));
+      if (response) {
+        await nakama.connect(useSSL, verbose, protobuf);
+        app.fire("nakama#init", nakama);
+        setState(1);
+        setNakama(nakama);
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
   const initCanvas = () => {
     const canvas = loginCanvas.current;
     canvas.width = window.innerWidth;
@@ -97,14 +127,14 @@ const LoginView = ({ setState, app, setNakama }) => {
           <div
             className="button_github_login"
             onClick={() => {
-              const GITHUB_LOGIN_URL =
-                `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}`;
+              const GITHUB_LOGIN_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}`;
               window.location.assign(GITHUB_LOGIN_URL);
             }}
           >
             <GitHubIcon style={{ marginRight: 8 }} />
             Github Login
           </div>
+          <button onClick={guestLogin}>게스트 로그인</button>
         </div>
       </div>
       <canvas className="login_canvas" ref={loginCanvas}></canvas>

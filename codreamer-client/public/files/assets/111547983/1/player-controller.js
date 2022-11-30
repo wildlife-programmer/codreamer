@@ -6,12 +6,20 @@ class PlayerController extends pc.ScriptType {
     this.model = this.entity.findByTag("model")[0];
     this.moveDelta = new pc.Vec3();
     this.speed = 10;
+    this.speaker = this.entity.findByTag("speaker")[0];
+    this.speaker_timer = null;
 
     this.entity.on("move", this.onMove, this);
+    this.entity.on("chat#speak", this.onChat, this);
     this.targetPosition = new pc.Vec3();
 
     this.distance = new pc.Vec3();
     this.direction = new pc.Vec3();
+
+    this.entity.on("destroy", () => {
+      this.entity.off("move", this.onMove, this);
+      this.entity.off("chat#speak", this.onChat, this);
+    });
   }
   update(dt) {
     if (this.isMoving) {
@@ -42,6 +50,27 @@ class PlayerController extends pc.ScriptType {
         this.targetPosition.z
       );
     }
+  }
+  onChat(message) {
+    if (this.speaker_timer) clearTimeout(this.speaker_timer);
+
+    this.speaker.enabled = true;
+    this.speaker.element.text = this.chunkSubstr(message.content.message, 7);
+    this.speaker_timer = setTimeout(() => {
+      this.speaker.enabled = false;
+      this.speaker.element.text = "";
+    }, 3000);
+  }
+  chunkSubstr(str, size) {
+    const numChunks = Math.ceil(str.length / size);
+    const chunks = new Array(numChunks);
+
+    for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+      chunks[i] = str.substr(o, size);
+    }
+    let lineBreaked = chunks.join(",").replaceAll(",", "\n");
+
+    return lineBreaked;
   }
 }
 

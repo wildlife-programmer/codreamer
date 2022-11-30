@@ -75,7 +75,7 @@ end
 
 local function add_guest_message(context, payload)
     local current_time = osTime() + 32400
-    local date = osDate("%Y.%m.%d", current_time)
+    local date = osDate("%Y.%m.%d %H:%M", current_time)
     local decoded = jsonDecode(payload)
     local user_id = context.user_id
     local storage_config = {
