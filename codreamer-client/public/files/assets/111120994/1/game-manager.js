@@ -21,7 +21,6 @@ class GameManager extends pc.ScriptType {
     this._root = app.root;
     this.playerMap = new Map();
   }
-  update() {}
 
   nakamaInit(nakama) {
     if (!nakama) return;
@@ -56,9 +55,13 @@ class GameManager extends pc.ScriptType {
     this.nakama.socket.writeChatMessage(`2...${this.match_id}`, messageData);
   }
 
-  onMatchPresence(joins) {
-    if (joins.length > 0) {
-      joins.forEach((join) => {});
+  onMatchPresence(ev) {
+    const leaves = ev.leaves;
+    if (leaves && leaves.length > 0) {
+      leaves.forEach((leave) => {
+        const player = this.playerMap.get(leave.user_id);
+        if (player) player.destroy();
+      });
     }
   }
   onChannelMessage(message) {

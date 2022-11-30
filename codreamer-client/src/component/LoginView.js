@@ -98,7 +98,7 @@ const LoginView = ({ setState, app, setNakama }) => {
 
     const dots = [];
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 50; i++) {
       const randomX = Math.random() * window.innerWidth;
       const randomY = Math.random() * window.innerHeight;
       const dot = new Dot(randomX, randomY);
