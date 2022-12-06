@@ -103,6 +103,12 @@ h6 {
   background-color: #333;
 }
 
+.chat_title {
+  display: flex;
+  justify-content: center;
+  margin: 4px;
+}
+
 .chat_open_button {
   margin: 4px;
   padding: 4px;
@@ -117,6 +123,15 @@ h6 {
   border-radius: var(--border-radius-2);
   background-color: var(--color-yellow-secondary);
   transition: all 300ms ease;
+  box-shadow: -4px 4px 12px var(--color-yellow-primary)
+}
+
+.chat_view:hover {
+  box-shadow: -8px 8px 20px var(--color-yellow-primary)
+}
+
+.chat_view_close {
+  display: none;
 }
 
 .chat_container {
