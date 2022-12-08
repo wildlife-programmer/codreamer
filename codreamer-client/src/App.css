@@ -103,6 +103,8 @@ h6 {
   background-color: #333;
 }
 
+/* CHAT */
+
 .chat_title {
   display: flex;
   justify-content: center;
@@ -202,6 +204,20 @@ h6 {
   border: 2px solid var(--color-purple-primary);
   background-color: var(--color-yellow-primary);
 }
+
+.chats {
+  margin: 4px;
+  padding: 4px;
+}
+.chats_name {
+  font-size: .25rem;
+}
+.chats_message {
+  padding: 4px;
+  border-radius: var(--border-radius-2);
+  background-color: #e6d578;
+}
+
 /* LOBBY VIEW */
 
 .lobby_canvas {
