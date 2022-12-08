@@ -30,13 +30,13 @@ const Chat = ({ app }) => {
     const username = data.username;
     console.log(username);
     setUserName(username);
-    };
+  };
   const onGetChat = (data) => {
     console.log("data", data);
     const message = data.content.message;
     setChats((prev) => {
       let temp = [...prev, message];
-      if (temp.length > 5) temp = temp.slice(1, temp.length);
+      if (temp.length > 15) temp = temp.slice(1, temp.length);
       return temp;
     });
   };
@@ -47,7 +47,7 @@ const Chat = ({ app }) => {
 
   return (
     <div className="chatWrap">
-      <div className={click ? "chat_view" : "chat_view_close"} style={{ overflowY: "auto", width: 300, height: 500, color: "#000" }}>
+      <div className={click ? "chat_view" : "chat_view_close"} style={{ overflowY: "auto", width: 300, height: 510, color: "#000" }}>
         <span className="chat_title">Chat</span>
         {chats.length > 0 &&
           chats.map((chat, idx) => (
