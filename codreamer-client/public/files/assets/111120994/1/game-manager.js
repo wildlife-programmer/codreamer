@@ -65,7 +65,6 @@ class GameManager extends pc.ScriptType {
     }
   }
   onChannelMessage(message) {
-    console.log(message);
     const player = this.playerMap.get(message.sender_id);
     if (!player) return;
 

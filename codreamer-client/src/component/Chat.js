@@ -1,19 +1,17 @@
 import { useRef, useEffect, useState } from "react";
 import "../App.css";
 import SendIcon from "@mui/icons-material/Send";
+import CommentIcon from "@mui/icons-material/Comment";
+import CommentsDisabledIcon from "@mui/icons-material/CommentsDisabled";
+
 const Chat = ({ app }) => {
   const [chats, setChats] = useState([]);
   const [chatValue, setChatValue] = useState("");
-  const [username, setUserName] = useState("");
-  const [click, setClick] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const inputRef = useRef();
 
-  const openChat = () => {
-    setClick(!click);
-    console.log(click);
-  };
   const onKeypress = (e) => {
-    if (e.key == "Enter") {
+    if (e.key === "Enter") {
       handleSendMessage();
     }
   };
@@ -26,41 +24,43 @@ const Chat = ({ app }) => {
     setChatValue("");
     inputRef.current.focus();
   };
-  const onGetName = (data) => {
-    const username = data.username;
-    console.log(username);
-    setUserName(username);
-  };
   const onGetChat = (data) => {
-    console.log("data", data);
+    const username = data.username;
     const message = data.content.message;
+
+    const chat = {
+      username: username,
+      message: message,
+    };
     setChats((prev) => {
-      let temp = [...prev, message];
+      let temp = [...prev, chat];
       if (temp.length > 15) temp = temp.slice(1, temp.length);
       return temp;
     });
   };
   useEffect(() => {
-    app.on("chat#get", onGetName);
     app.on("chat#get", onGetChat);
   }, []);
 
   return (
     <div className="chatWrap">
-      <div className={click ? "chat_view" : "chat_view_close"} style={{ overflowY: "auto", width: 300, height: 510, color: "#000" }}>
+      <div className={chatOpen ? "chat_view" : "chat_view_close"}>
         <span className="chat_title">Chat</span>
         {chats.length > 0 &&
           chats.map((chat, idx) => (
             <div className="chats" key={idx}>
-              <span className="chats_name">{username}</span>
-              <span className="chats_message">{chat}</span>
+              <span className="chats_name">{chat.username}</span>
+              <span className="chats_message">{chat.message}</span>
             </div>
           ))}
       </div>
       <div className="chat_container">
-        <button className="chat_open_button" onClick={openChat}>
-          {click ? "채팅창닫기" : "채팅창열기"}
-        </button>
+        <div
+          className={chatOpen ? "chat_button_on" : "chat_button_off"}
+          onClick={() => setChatOpen(!chatOpen)}
+        >
+          {chatOpen ? <CommentsDisabledIcon /> : <CommentIcon />}
+        </div>
         <input
           className="chat_input"
           ref={inputRef}
