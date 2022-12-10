@@ -1,4 +1,4 @@
-class GuestbookManager extends pc.ScriptType {
+class HallGuestbookManager extends pc.ScriptType {
   initialize() {
     const app = this.app;
 
@@ -31,4 +31,4 @@ class GuestbookManager extends pc.ScriptType {
   }
 }
 
-pc.registerScript(GuestbookManager, "guestbookManager");
+pc.registerScript(HallGuestbookManager, "hallGuestbookManager");

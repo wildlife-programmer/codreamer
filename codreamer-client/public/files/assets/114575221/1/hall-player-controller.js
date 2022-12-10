@@ -1,4 +1,4 @@
-class PlayerController extends pc.ScriptType {
+class HallPlayerController extends pc.ScriptType {
   initialize() {
     this.isLocalPlayer = false;
 
@@ -85,4 +85,4 @@ class PlayerController extends pc.ScriptType {
   }
 }
 
-pc.registerScript(PlayerController, "playerController");
+pc.registerScript(HallPlayerController, "hallPlayerController");

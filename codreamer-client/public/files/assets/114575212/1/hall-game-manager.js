@@ -1,7 +1,7 @@
 const OP_WORLD_STATE = 1;
 const OP_PLAYER_SPAWN = 2;
 const OP_PLAYER_MOVE = 3;
-class GameManager extends pc.ScriptType {
+class HallGameManager extends pc.ScriptType {
   initialize() {
     this.app.graphicsDevice.maxPixelRatio *= 2;
     const app = this.app;
@@ -41,8 +41,14 @@ class GameManager extends pc.ScriptType {
   onChatSpeak(message) {
     const player = this.playerMap.get(message.sender_id);
     if (!player) return;
+
     player.fire("chat#speak", message);
   }
+
+  // onSendChat(message) {
+  //   const messageData = { message: message };
+  //   this.nakama.socket.writeChatMessage(`2...${this.match_id}`, messageData);
+  // }
 
   onMatchPresence(ev) {
     const leaves = ev.leaves;
@@ -166,9 +172,9 @@ class GameManager extends pc.ScriptType {
   }
 }
 
-pc.registerScript(GameManager, "gameManager");
+pc.registerScript(HallGameManager, "hallGameManager");
 
-GameManager.attributes.add("player_template", {
+HallGameManager.attributes.add("player_template", {
   type: "asset",
   assetType: "template",
 });

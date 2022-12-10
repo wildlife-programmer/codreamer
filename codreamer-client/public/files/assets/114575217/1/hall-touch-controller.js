@@ -1,4 +1,4 @@
-class TouchController extends pc.ScriptType {
+class HallTouchController extends pc.ScriptType {
   initialize() {
     this.eulers = new pc.Vec3();
     this.app.touchController = this;
@@ -71,10 +71,10 @@ class TouchController extends pc.ScriptType {
   update(dt) {
     if (!this.inputTarget) return;
     const min = this.maxRadius * 0.7;
-    const worldDirection = TouchController.worldDirection;
+    const worldDirection = HallTouchController.worldDirection;
     worldDirection.set(0, 0, 0);
 
-    const tempDirection = TouchController.tempDirection;
+    const tempDirection = HallTouchController.tempDirection;
     let x = 0;
     let z = 0;
     let forward = this.inputTarget.forward;
@@ -169,7 +169,7 @@ class TouchController extends pc.ScriptType {
     this.fpv = bool;
   }
 }
-TouchController.worldDirection = new pc.Vec3();
-TouchController.tempDirection = new pc.Vec3();
+HallTouchController.worldDirection = new pc.Vec3();
+HallTouchController.tempDirection = new pc.Vec3();
 
-pc.registerScript(TouchController, "touchController");
+pc.registerScript(HallTouchController, "hallTouchController");

@@ -1,4 +1,4 @@
-class MouseController extends pc.ScriptType {
+class HallMouseController extends pc.ScriptType {
   initialize() {
     const app = this.app;
     app.mouseController = this;
@@ -46,4 +46,4 @@ class MouseController extends pc.ScriptType {
   }
 }
 
-pc.registerScript(MouseController, "mouseController");
+pc.registerScript(HallMouseController, "hallMouseController");

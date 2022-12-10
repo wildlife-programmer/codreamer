@@ -1,4 +1,4 @@
-class KeyboardController extends pc.ScriptType {
+class HallKeyboardController extends pc.ScriptType {
   initialize() {
     const app = this.app;
 
@@ -44,10 +44,10 @@ class KeyboardController extends pc.ScriptType {
     const anim = this.model.anim;
     const rigid = this.inputTarget.rigidbody;
     const isWalking = anim.getBoolean("walk");
-    const worldDirection = KeyboardController.worldDirection;
+    const worldDirection = HallKeyboardController.worldDirection;
     worldDirection.set(0, 0, 0);
 
-    const tempDirection = KeyboardController.tempDirection;
+    const tempDirection = HallKeyboardController.tempDirection;
 
     let forward = this.playerCamera.forward;
     forward.y = 0;
@@ -99,7 +99,7 @@ class KeyboardController extends pc.ScriptType {
 
   onKeyDown(ev) {}
 }
-KeyboardController.worldDirection = new pc.Vec3();
-KeyboardController.tempDirection = new pc.Vec3();
+HallKeyboardController.worldDirection = new pc.Vec3();
+HallKeyboardController.tempDirection = new pc.Vec3();
 
-pc.registerScript(KeyboardController, "keyboardController");
+pc.registerScript(HallKeyboardController, "hallKeyboardController");

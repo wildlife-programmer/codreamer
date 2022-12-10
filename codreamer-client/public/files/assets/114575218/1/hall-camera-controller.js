@@ -1,4 +1,4 @@
-class CameraController extends pc.ScriptType {
+class HallCameraController extends pc.ScriptType {
   initialize() {
     this.eulers = new pc.Vec3();
     this.touchCoords = new pc.Vec2();
@@ -85,4 +85,4 @@ class CameraController extends pc.ScriptType {
   }
 }
 
-pc.registerScript(CameraController, "cameraController");
+pc.registerScript(HallCameraController, "hallCameraController");

@@ -1,7 +1,6 @@
-class SceneManager extends pc.ScriptType {
+class EntrySceneManager extends pc.ScriptType {
   initialize() {
     this.root = this.app.root.findByName("Root");
-    console.log("current root:", this.root);
     this.app.fire("scene_init", this.sceneName);
     this.app.on("scene_change", this.changeScene, this);
     this.on("destroy", () => {
@@ -56,6 +55,6 @@ class SceneManager extends pc.ScriptType {
   }
 }
 
-pc.registerScript(SceneManager, "sceneManager");
+pc.registerScript(EntrySceneManager, "entrySceneManager");
 
-SceneManager.attributes.add("sceneName", { type: "string" });
+EntrySceneManager.attributes.add("sceneName", { type: "string" });

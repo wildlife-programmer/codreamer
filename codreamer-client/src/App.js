@@ -17,7 +17,6 @@ function App() {
   const [match, setMatch] = useState();
 
   const handleScene = (scene_name) => {
-    console.log(scene_name);
     if (scene_name === "hall") {
       app.fire("nakama_init", nakama);
     }
