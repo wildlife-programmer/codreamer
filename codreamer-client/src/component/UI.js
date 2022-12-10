@@ -1,12 +1,16 @@
-import GithubInfo from "./GithubInfo";
-import Perspective from "./Perspective";
+import GithubInfo from './GithubInfo'
+import Perspective from './Perspective'
+import VideoConference from './VideoConference'
 const UI = ({ app }) => {
   return (
-    <div className="ui_container">
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <GithubInfo app={app} />
-      <Perspective app={app}/>
+      <div className="right_top">
+        <VideoConference app={app} />
+        <Perspective app={app} />
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default UI;
+export default UI
