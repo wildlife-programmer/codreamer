@@ -42,6 +42,12 @@ class Nakama {
       await this.socket.connect(this.session, true);
     } catch (err) {}
   }
+
+  async getAccount() {
+    if (!this.client || !this.session) return;
+    const account = await this.client.getAccount(this.session);
+    return account;
+  }
 }
 
 export default Nakama;

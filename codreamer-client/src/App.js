@@ -1,35 +1,47 @@
 import { useState, useEffect } from "react";
+import EntryScene from "./component/EntryScene";
 import LoginView from "./component/LoginView";
 import LobbyView from "./component/LobbyView";
 import MainView from "./component/MainView";
+import LoadingScene from "./component/LoadingScene";
 import "./App.css";
+
+const app = window.pc.app;
 function App() {
-  const [app, setApp] = useState();
+  const [scene, setScene] = useState();
+  const [account, setAccount] = useState();
   const [nakama, setNakama] = useState();
-  const [loaded, setLoaded] = useState(false);
+
   const [UIState, setUIState] = useState(0);
   const [match, setMatch] = useState();
 
-  const handleLoaded = () => setLoaded(true);
+  const handleScene = (scene_name) => setScene(scene_name);
 
   const onJoinSuccess = () => {
     setUIState(2);
   };
 
   useEffect(() => {
-    const application = window.pc.app;
-    setApp(application);
-    application.on("loaded", handleLoaded);
-    application.on("match#join_success", onJoinSuccess);
+    app.on("scene_init", handleScene);
+    app.on("match#join_success", onJoinSuccess);
     return () => {
-      application.off("loaded", handleLoaded);
-      application.off("match#join_success", onJoinSuccess);
+      app.off("scene_init", handleScene);
+      app.off("match#join_success", onJoinSuccess);
     };
   }, []);
   return (
-    loaded && (
-      <div className="App">
-        {UIState === 0 && (
+    <div className="App">
+      <LoadingScene app={app} />
+      {scene === "entry" && (
+        <EntryScene
+          nakama={nakama}
+          setNakama={setNakama}
+          app={app}
+          account={account}
+          setAccount={setAccount}
+        />
+      )}
+      {/* {UIState === 0 && (
           <div className="container">
             <LoginView setNakama={setNakama} app={app} setState={setUIState} />
           </div>
@@ -44,9 +56,8 @@ function App() {
             />
           </div>
         )}
-        {UIState === 2 && <MainView nakama={nakama} app={app} />}
-      </div>
-    )
+        {UIState === 2 && <MainView nakama={nakama} app={app} />} */}
+    </div>
   );
 }
 
