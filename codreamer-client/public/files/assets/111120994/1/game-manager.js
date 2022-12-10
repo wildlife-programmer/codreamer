@@ -6,53 +6,42 @@ class GameManager extends pc.ScriptType {
     this.app.graphicsDevice.maxPixelRatio *= 2;
     const app = this.app;
     app.gameManager = this;
-    app.on("nakama#init", this.nakamaInit, this);
-    app.on("player#spawn", this.sendPlayerSpawn, this);
-    app.on("match#join", this.matchJoin, this);
-    app.on("chat#send", this.onSendChat, this);
+    app.on("nakama_init", this.onNakamaInit, this);
+    app.on("match#join_success", this.matchJoin, this);
+    app.on("chat#speak", this.onChatSpeak, this);
 
     this.on("destroy", () => {
-      app.off("nakama#init", this.nakamaInit, this);
-      app.off("player#spawn", this.sendPlayerSpawn, this);
-      app.off("match#join", this.matchJoin, this);
-      app.off("chat#send", this.onSendChat, this);
+      app.off("nakama_init", this.onNakamaInit, this);
+      app.off("match#join_success", this.matchJoin, this);
+      app.off("chat#speak", this.onChatSpeak, this);
     });
 
     this._root = app.root;
     this.playerMap = new Map();
+    app.fire("nakama_request");
   }
 
-  nakamaInit(nakama) {
+  onNakamaResponse(nakama) {
+    this.nakama = nakama;
+    this.nakama.socket.onmatchdata = this.onMatchData.bind(this);
+    this.nakama.socket.onmatchpresence = this.onMatchPresence.bind(this);
+  }
+
+  onNakamaInit(nakama) {
     if (!nakama) return;
     this.app.nakama = this.nakama = nakama;
     this.nakama.socket.onmatchpresence = this.onMatchPresence.bind(this);
     this.nakama.socket.onmatchdata = this.onMatchData.bind(this);
   }
 
-  async matchJoin() {
-    const result = await this.nakama.socket.rpc("match_create");
-    this.match_id = result.payload;
-    const match = await this.nakama.socket.joinMatch(this.match_id);
-    if (match) {
-      this.app.fire("match#join_success");
-      this.sendPlayerSpawn();
-      const chat = await this.nakama.socket.joinChat(
-        this.match_id,
-        1,
-        false,
-        false
-      );
-      if (chat) {
-        this.nakama.socket.onchannelmessage = this.onChannelMessage.bind(this);
-        this.nakama.socket.onchannelpresence =
-          this.onChannelPresence.bind(this);
-      }
-    }
+  matchJoin(match_id) {
+    this.match_id = match_id;
   }
 
-  onSendChat(message) {
-    const messageData = { message: message };
-    this.nakama.socket.writeChatMessage(`2...${this.match_id}`, messageData);
+  onChatSpeak(message) {
+    const player = this.playerMap.get(message.sender_id);
+    if (!player) return;
+    player.fire("chat#speak", message);
   }
 
   onMatchPresence(ev) {
@@ -64,18 +53,7 @@ class GameManager extends pc.ScriptType {
       });
     }
   }
-  onChannelMessage(message) {
-    const player = this.playerMap.get(message.sender_id);
-    if (!player) return;
-
-    player.fire("chat#speak", message);
-    this.app.fire("chat#get", message);
-  }
-
-  onChannelPresence(message) {
-    // console.log("onchannelPresence", message);
-  }
-  onMatchData(message) {
+  onMatchData(message, match_id) {
     const op_code = message.op_code;
     const data = message.data;
     const decoded_data = JSON.parse(new TextDecoder().decode(data));
@@ -97,30 +75,33 @@ class GameManager extends pc.ScriptType {
 
   sendPlayerSpawn(match_id) {
     setTimeout(async () => {
-      const account = await this.getAccount();
       await this.sendMatchState(OP_PLAYER_SPAWN, {});
     }, 0);
   }
 
-  sendPlayerMove(pos) {
+  sendPlayerMove(pos, direction, ext = false) {
     setTimeout(async () => {
-      await this.sendMatchState(OP_PLAYER_MOVE, { pos: this.float2int(pos) });
+      await this.sendMatchState(OP_PLAYER_MOVE, {
+        pos: this.float2int(pos),
+        direction: this.float2int(direction),
+        ext: ext,
+      });
     }, 0);
   }
 
   float2int(pos) {
     if (pos instanceof pc.Vec3)
       return [
-        Math.floor(pos.x * 10),
-        Math.floor(pos.y * 10),
-        Math.floor(pos.z * 10),
+        Math.floor(pos.x * 1000),
+        Math.floor(pos.y * 1000),
+        Math.floor(pos.z * 1000),
       ];
     else return pos;
   }
 
   int2float(pos) {
     if (Array.isArray(pos)) {
-      return new pc.Vec3(pos[0] / 10, pos[1] / 10, pos[2] / 10);
+      return new pc.Vec3(pos[0] / 1000, pos[1] / 1000, pos[2] / 1000);
     } else {
       return pos;
     }
@@ -136,6 +117,7 @@ class GameManager extends pc.ScriptType {
     }, 0);
   }
   async onWorldState(op_code, data) {
+    this.sendPlayerSpawn();
     const account = await this.getAccount();
     const user_id = account.user.id;
     const players = data.players;
@@ -155,7 +137,12 @@ class GameManager extends pc.ScriptType {
     const player = this.playerMap.get(data.user_id);
 
     if (!player || player === this.localPlayer) return;
-    player.fire("move", this.int2float(data.pos));
+    player.fire(
+      "move",
+      this.int2float(data.pos),
+      this.int2float(data.direction),
+      data.ext
+    );
   }
 
   spawnPlayer(playerInfo, self) {

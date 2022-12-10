@@ -181,6 +181,11 @@ h6 {
   border-radius: 8px;
 }
 
+/* Hall Scene */
+.scene_hall {
+  pointer-events: auto;
+}
+
 /* LOGIN VIEW */
 
 .App {
@@ -215,7 +220,7 @@ h6 {
   pointer-events: auto;
 }
 .loginview::before {
-  content: "";
+  content: '';
   position: absolute;
   /* background-color: #2b0048; */
 }

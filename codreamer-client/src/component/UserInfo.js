@@ -33,7 +33,6 @@ const UserInfo = ({ app, account, setAccount, nakama, setNakama }) => {
       );
       if (response) {
         await nakama.connect(useSSL, verbose, protobuf);
-        // app.fire("nakama#init", nakama);
         setNakama(nakama);
       }
     } catch (err) {

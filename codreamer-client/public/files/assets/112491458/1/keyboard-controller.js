@@ -5,8 +5,10 @@ class KeyboardController extends pc.ScriptType {
     this.inputTarget = null;
     this.playerCamera = null;
     this.cameraScript = null;
-    this.speed = 0.1;
+    this.speed = 40;
     this.move_able = true;
+
+    this.force = new pc.Vec3();
 
     app.on("localPlayer#init", this.initInputTarget, this);
 
@@ -31,6 +33,7 @@ class KeyboardController extends pc.ScriptType {
   }
   initInputTarget(localPlayer) {
     this.inputTarget = localPlayer;
+    this.model = localPlayer.findByTag("model")[0];
     this.playerCamera = localPlayer.findByTag("camera")[0];
     this.cameraScript = this.playerCamera.script.cameraController;
   }
@@ -38,13 +41,18 @@ class KeyboardController extends pc.ScriptType {
   update(dt) {
     if (!this.inputTarget || !this.move_able) return;
     const app = this.app;
+    const anim = this.model.anim;
+    const rigid = this.inputTarget.rigidbody;
+    const isWalking = anim.getBoolean("walk");
     const worldDirection = KeyboardController.worldDirection;
     worldDirection.set(0, 0, 0);
 
     const tempDirection = KeyboardController.tempDirection;
 
-    let forward = this.inputTarget.forward;
-    let right = this.inputTarget.right;
+    let forward = this.playerCamera.forward;
+    forward.y = 0;
+    let right = this.playerCamera.right;
+    right.y = 0;
 
     let x = 0;
     let z = 0;
@@ -55,22 +63,37 @@ class KeyboardController extends pc.ScriptType {
     if (app.keyboard.isPressed(pc.KEY_S)) z -= 1;
 
     if (x !== 0 || z !== 0) {
+      // this.force.set(x, 0, z).normalize().scale(this.speed);
+      // const nextPos = this.inputTarget.getPosition().clone().sub(this.force);
+      // this.model.lookAt(nextPos);
+      // rigid.applyForce(this.force);
+
       worldDirection.add(tempDirection.copy(forward).mulScalar(z));
       worldDirection.add(tempDirection.copy(right).mulScalar(x));
-      worldDirection.normalize();
+      worldDirection.normalize().scale(this.speed);
+      const nextPos = this.inputTarget
+        .getPosition()
+        .clone()
+        .sub(worldDirection);
 
-      const pos = new pc.Vec3(worldDirection.x * dt, 0, worldDirection.z * dt);
-      pos.normalize().scale(this.speed);
-      pos.add(this.inputTarget.getPosition());
+      rigid.applyForce(worldDirection);
+      this.model.lookAt(nextPos);
 
-      let targetY = this.cameraScript.eulers.x + 180;
-      let rot = new pc.Vec3(0, targetY, 0);
+      // const pos = new pc.Vec3(worldDirection.x * dt, 0, worldDirection.z * dt);
+      // pos.normalize().scale(this.speed);
+      // pos.add(this.inputTarget.getPosition());
 
-      this.inputTarget.rigidbody.teleport(pos, rot);
+      // let targetY = this.cameraScript.eulers.x + 180;
+      // let rot = new pc.Vec3(0, targetY, 0);
+
+      // this.inputTarget.rigidbody.teleport(pos, rot);
       if (this.app.frame % 15 === 0) {
         const gm = this.app.gameManager;
-        gm.sendPlayerMove(pos);
+        gm.sendPlayerMove(this.inputTarget.getPosition(), nextPos);
       }
+      if (!isWalking) anim.setBoolean("walk", true);
+    } else {
+      if (isWalking) anim.setBoolean("walk", false);
     }
   }
 

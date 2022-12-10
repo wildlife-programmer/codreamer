@@ -4,6 +4,7 @@ class PlayerController extends pc.ScriptType {
 
     this.rigid = this.entity.rigidbody;
     this.model = this.entity.findByTag("model")[0];
+    this.anim = this.model.anim;
     this.moveDelta = new pc.Vec3();
     this.speed = 10;
     this.speaker = this.entity.findByTag("speaker")[0];
@@ -20,35 +21,45 @@ class PlayerController extends pc.ScriptType {
       this.entity.off("move", this.onMove, this);
       this.entity.off("chat#speak", this.onChat, this);
     });
+    this.posAlpha = 0;
+    this.temp = new pc.Vec3();
   }
   update(dt) {
     if (this.isMoving) {
+      const isWalking = this.anim.getBoolean("walk");
+
+      if (this.posAlpha > 1) return;
+      this.posAlpha += dt;
+
+      this.temp.lerp(this.entity.getPosition(), this.targetPosition, 0.1);
+
       this.distance.sub2(this.targetPosition, this.entity.getPosition());
 
       this.direction.copy(this.distance).normalize();
 
-      if (this.distance.length() > 0.1) {
+      if (this.distance.length() > 0.05) {
         this.rigid.teleport(
-          this.entity.getPosition().add(this.direction.scale(this.speed * dt))
+          // this.entity.getPosition().add(this.direction.scale(this.speed * dt))
+          this.temp
         );
+        if (!isWalking) this.anim.setBoolean("walk", true);
+      } else {
+        if (isWalking) this.anim.setBoolean("walk", false);
       }
     }
   }
-  onMove(targetPosition, ext) {
+  onMove(targetPosition, direction, ext) {
     if (ext) {
       this.targetPosition.copy(targetPosition);
       this.rigid.teleport(targetPosition);
       return;
     }
+    this.posAlpha = 0;
     this.isMoving = true;
     this.targetPosition.copy(targetPosition);
     this.distance.sub2(targetPosition, this.entity.getPosition());
     if (this.distance.length() > 0.1) {
-      this.model.lookAt(
-        this.targetPosition.x,
-        this.model.getPosition().y,
-        this.targetPosition.z
-      );
+      this.model.lookAt(direction.x, this.model.getPosition().y, direction.z);
     }
   }
   onChat(message) {

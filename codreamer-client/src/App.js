@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import EntryScene from "./component/EntryScene";
+import HallScene from "./component/HallScene";
 import LoginView from "./component/LoginView";
 import LobbyView from "./component/LobbyView";
 import MainView from "./component/MainView";
@@ -15,20 +16,20 @@ function App() {
   const [UIState, setUIState] = useState(0);
   const [match, setMatch] = useState();
 
-  const handleScene = (scene_name) => setScene(scene_name);
-
-  const onJoinSuccess = () => {
-    setUIState(2);
+  const handleScene = (scene_name) => {
+    console.log(scene_name);
+    if (scene_name === "hall") {
+      app.fire("nakama_init", nakama);
+    }
+    setScene(scene_name);
   };
 
   useEffect(() => {
     app.on("scene_init", handleScene);
-    app.on("match#join_success", onJoinSuccess);
     return () => {
       app.off("scene_init", handleScene);
-      app.off("match#join_success", onJoinSuccess);
     };
-  }, []);
+  });
   return (
     <div className="App">
       <LoadingScene app={app} />
@@ -41,6 +42,7 @@ function App() {
           setAccount={setAccount}
         />
       )}
+      {scene === "hall" && <HallScene app={app} nakama={nakama} />}
       {/* {UIState === 0 && (
           <div className="container">
             <LoginView setNakama={setNakama} app={app} setState={setUIState} />
