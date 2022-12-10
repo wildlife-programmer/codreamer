@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FallingStar } from "./classes";
+import { FallingStar } from "../classes";
 const LobbyView = ({ app, nakama, setState }) => {
   const lobbyCanvas = useRef();
   const titleRef = useRef();

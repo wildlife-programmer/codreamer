@@ -32,6 +32,7 @@ const GuestBook = ({ app, nakama }) => {
   };
   const getGuestBook = async () => {
     const result = await nakama.socket.rpc("get_guestbook");
+    if (!result.payload) return;
     const payload = JSON.parse(result.payload);
     const temp = [];
     if (payload.length > 0) {

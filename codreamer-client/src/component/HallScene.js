@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Chat from "./Chat";
+import UI from "./UI";
+import GuestBook from "./GuestBook";
 const HallScene = ({ app, nakama }) => {
   const [matchId, setMatchId] = useState();
   const [hallJoined, setHallJoined] = useState(false);
@@ -33,6 +35,8 @@ const HallScene = ({ app, nakama }) => {
       <div className="scene_hall">
         <div>Hall Scene</div>
         {chatJoined && <Chat app={app} nakama={nakama} matchId={matchId} />}
+        <UI app={app} />
+        <GuestBook app={app} nakama={nakama} />
       </div>
     )
   );

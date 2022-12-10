@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
-import Nakama from "../nakama/nakama";
+import Nakama from "../../nakama/nakama";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import { Dot } from "./classes";
+import { Dot } from "../classes";
 
 const LoginView = ({ setState, app, setNakama }) => {
   const loginCanvas = useRef();

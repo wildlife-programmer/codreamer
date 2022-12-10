@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import EntryScene from "./component/EntryScene";
 import HallScene from "./component/HallScene";
-import LoginView from "./component/LoginView";
-import LobbyView from "./component/LobbyView";
+import LoginView from "./component/deprecated/LoginView";
+import LobbyView from "./component/deprecated/LobbyView";
 import MainView from "./component/MainView";
 import LoadingScene from "./component/LoadingScene";
 import "./App.css";
