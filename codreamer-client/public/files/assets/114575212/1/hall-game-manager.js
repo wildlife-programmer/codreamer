@@ -1,6 +1,7 @@
 const OP_WORLD_STATE = 1;
 const OP_PLAYER_SPAWN = 2;
 const OP_PLAYER_MOVE = 3;
+const OP_PLAYER_JUMP = 4;
 class HallGameManager extends pc.ScriptType {
   initialize() {
     this.app.graphicsDevice.maxPixelRatio *= 2;
@@ -79,6 +80,9 @@ class HallGameManager extends pc.ScriptType {
       case OP_PLAYER_MOVE:
         this.onPlayerMove(op_code, decoded_data);
         break;
+      case OP_PLAYER_JUMP:
+        this.onPlayerJump(op_code, decoded_data);
+        break;
       default:
         break;
     }
@@ -97,6 +101,12 @@ class HallGameManager extends pc.ScriptType {
         direction: this.float2int(direction),
         ext: ext,
       });
+    }, 0);
+  }
+
+  sendPlayerJump() {
+    setTimeout(async () => {
+      await this.sendMatchState(OP_PLAYER_JUMP, {});
     }, 0);
   }
 
@@ -155,6 +165,11 @@ class HallGameManager extends pc.ScriptType {
       data.ext
     );
   }
+  onPlayerJump(op_code, data) {
+    const player = this.playerMap.get(data.user_id);
+    if (!player) return;
+    player.fire("jump");
+  }
 
   spawnPlayer(playerInfo, self) {
     const instance = this.player_template.resource.instantiate();
@@ -183,4 +198,4 @@ HallGameManager.attributes.add("player_template", {
   type: "asset",
   assetType: "template",
 });
-HallGameManager.attributes.add("joystick", { type: 'entity' }); 
+HallGameManager.attributes.add("joystick", { type: "entity" });

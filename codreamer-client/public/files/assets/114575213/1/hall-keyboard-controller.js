@@ -97,7 +97,14 @@ class HallKeyboardController extends pc.ScriptType {
     }
   }
 
-  onKeyDown(ev) {}
+  onKeyDown(ev) {
+    if (!this.inputTarget) return;
+    const gm = this.app.gameManager;
+    if (this.inputTarget.canJump && ev.key === pc.KEY_SPACE) {
+      this.inputTarget.canJump = false;
+      gm.sendPlayerJump();
+    }
+  }
 }
 HallKeyboardController.worldDirection = new pc.Vec3();
 HallKeyboardController.tempDirection = new pc.Vec3();

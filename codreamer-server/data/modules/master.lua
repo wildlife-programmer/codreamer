@@ -8,6 +8,7 @@ local tInsert = table.insert
 local OP_WORLD_STATE = 1
 local OP_PLAYER_SPAWN = 2
 local OP_PLAYER_MOVE = 3
+local OP_PLAYER_JUMP = 4
 
 local function on_player_spawn(context, dispatcher, tick, state, message)
     local player = state.players[message.sender.session_id]
@@ -33,9 +34,20 @@ local function on_player_move(context, dispatcher, tick, state, message)
                                           nil)
 end
 
+local function on_player_jump(context, dispatcher, tick, state, message)
+    local player = state.players[message.sender.session_id]
+    if not player then return end
+
+    local decoded = jsonDecode(message.data)
+    decoded["user_id"] = player.user_id
+    dispatcher.broadcast_message_deferred(OP_PLAYER_JUMP, jsonEncode(decoded),
+                                          nil)
+end
+
 local message_table = {
     [OP_PLAYER_SPAWN] = on_player_spawn,
-    [OP_PLAYER_MOVE] = on_player_move
+    [OP_PLAYER_MOVE] = on_player_move,
+    [OP_PLAYER_JUMP] = on_player_jump
 }
 
 function M.match_init(context, setupstate)

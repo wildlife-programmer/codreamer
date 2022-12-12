@@ -5,6 +5,16 @@ class EntryKeyboardController extends pc.ScriptType {
     this.rigid = this.player.rigidbody;
     this.model = this.player.findByTag("model")[0];
     this.temp = new pc.Vec3();
+
+    if (this.app.keyboard) {
+
+      this.app.keyboard.on(pc.EVENT_KEYDOWN, this.onKeyDown, this);
+    }
+    this.on("destroy", () => {
+      if (this.app.keyboard) {
+        this.app.keyboard.off(pc.EVENT_KEYDOWN, this.onKeyDown, this);
+      }
+    })
   }
   update() {
     const rigid = this.rigid;
@@ -27,6 +37,12 @@ class EntryKeyboardController extends pc.ScriptType {
       if (!isWalking) anim.setBoolean("walk", true);
     } else {
       if (isWalking) anim.setBoolean("walk", false);
+    }
+  }
+  onKeyDown(ev) {
+    if (ev.key === pc.KEY_SPACE) {
+      this.rigid.applyImpulse(0, 30, 0);
+      this.model.anim.setTrigger('jump');
     }
   }
 }

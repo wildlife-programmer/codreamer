@@ -10,8 +10,14 @@ class HallPlayerController extends pc.ScriptType {
     this.speaker = this.entity.findByTag("speaker")[0];
     this.speaker_timer = null;
 
+    this.entity.canJump = true;
+
     this.entity.on("move", this.onMove, this);
+    this.entity.on("jump", this.onJump, this);
     this.entity.on("chat#speak", this.onChat, this);
+    this.rigid.on("triggerenter", this.onTriggerEnter, this);
+    this.rigid.on("collisionstart", this.onCollisionStart, this);
+
     this.targetPosition = new pc.Vec3();
 
     this.distance = new pc.Vec3();
@@ -20,6 +26,8 @@ class HallPlayerController extends pc.ScriptType {
     this.entity.on("destroy", () => {
       this.entity.off("move", this.onMove, this);
       this.entity.off("chat#speak", this.onChat, this);
+      this.rigid.off("triggerenter", this.onTriggerEnter, this);
+      this.rigid.off("collisionstart", this.onCollisionStart, this);
     });
     this.posAlpha = 0;
     this.temp = new pc.Vec3();
@@ -82,6 +90,16 @@ class HallPlayerController extends pc.ScriptType {
     let lineBreaked = chunks.join(",").replaceAll(",", "\n");
 
     return lineBreaked;
+  }
+  onTriggerEnter(contact) {}
+  onCollisionStart(contact) {
+    if (contact.other.tags.has("floor")) {
+      this.entity.canJump = true;
+    }
+  }
+  onJump() {
+    this.rigid.applyImpulse(0, 30, 0);
+    this.anim.setTrigger("jump");
   }
 }
 
