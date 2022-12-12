@@ -9,11 +9,16 @@ class HallGameManager extends pc.ScriptType {
     app.on("nakama_init", this.onNakamaInit, this);
     app.on("match#join_success", this.matchJoin, this);
     app.on("chat#speak", this.onChatSpeak, this);
-
+    if (app.touch) {
+      this.joystick.enabled = true;
+    }
     this.on("destroy", () => {
       app.off("nakama_init", this.onNakamaInit, this);
       app.off("match#join_success", this.matchJoin, this);
       app.off("chat#speak", this.onChatSpeak, this);
+      if (app.touch) {
+        this.joystick.enabled = false;
+      }
     });
 
     this._root = app.root;
@@ -178,3 +183,4 @@ HallGameManager.attributes.add("player_template", {
   type: "asset",
   assetType: "template",
 });
+HallGameManager.attributes.add("joystick", { type: 'entity' }); 
