@@ -33,7 +33,7 @@ const Chat = ({ app, nakama, matchId }) => {
     };
     setChats((prev) => {
       let temp = [...prev, chat];
-      if (temp.length > 15) temp = temp.slice(1, temp.length);
+      if (temp.length > 7) temp = temp.slice(1, temp.length);
       return temp;
     });
   };
@@ -45,8 +45,8 @@ const Chat = ({ app, nakama, matchId }) => {
   }, []);
 
   return (
-    <div className="chatWrap">
-      <div className={chatOpen ? "chat_view" : "chat_view_close"}>
+    <div className="chat_container">
+      <div className={chatOpen ? "chat_on" : "chat_off"}>
         <span className="chat_title">Chat</span>
         {chats.length > 0 &&
           chats.map((chat, idx) => (
@@ -56,27 +56,22 @@ const Chat = ({ app, nakama, matchId }) => {
             </div>
           ))}
       </div>
-      <div className="chat_container">
-        <div
-          className={chatOpen ? "chat_button_on" : "chat_button_off"}
-          onClick={() => setChatOpen(!chatOpen)}
-        >
-          {chatOpen ? <CommentsDisabledIcon /> : <CommentIcon />}
-        </div>
-        <input
-          className="chat_input"
-          ref={inputRef}
-          onKeyPress={onKeypress}
-          onFocus={() => app.fire("move#disable", false)}
-          onBlur={() => app.fire("move#able", true)}
-          value={chatValue}
-          onChange={handleChatValue}
-          placeholder="메세지를 전달해보세요"
-        ></input>
-        <button className="chat_button" onClick={handleSendMessage}>
-          <SendIcon />
-        </button>
+      <div className={chatOpen ? "chat_button_on" : "chat_button_off"} onClick={() => setChatOpen(!chatOpen)}>
+        {chatOpen ? <CommentsDisabledIcon /> : <CommentIcon />}
       </div>
+      <input
+        className="chat_input"
+        ref={inputRef}
+        onKeyPress={onKeypress}
+        onFocus={() => app.fire("move#disable", false)}
+        onBlur={() => app.fire("move#able", true)}
+        value={chatValue}
+        onChange={handleChatValue}
+        placeholder="메세지를 전달해보세요"
+      ></input>
+      <button className="chat_button" onClick={handleSendMessage}>
+        <SendIcon />
+      </button>
     </div>
   );
 };
