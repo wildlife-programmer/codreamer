@@ -4,23 +4,22 @@ import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
 import CommentsDisabledIcon from "@mui/icons-material/CommentsDisabled";
 
-const Chat = ({ app }) => {
+const Chat = ({ app, nakama, matchId }) => {
   const [chats, setChats] = useState([]);
   const [chatValue, setChatValue] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
   const inputRef = useRef();
 
   const onKeypress = (e) => {
-    if (e.key === "Enter") {
-      handleSendMessage();
-    }
+    if (e.key === "Enter") handleSendMessage();
   };
   const handleChatValue = (e) => {
     setChatValue(e.target.value);
   };
   const handleSendMessage = () => {
     if (!app) return;
-    app.fire("chat#send", chatValue);
+    const messageData = { message: chatValue };
+    nakama.socket.writeChatMessage(`2...${matchId}`, messageData);
     setChatValue("");
     inputRef.current.focus();
   };
@@ -39,7 +38,10 @@ const Chat = ({ app }) => {
     });
   };
   useEffect(() => {
-    app.on("chat#get", onGetChat);
+    app.on("chat#speak", onGetChat);
+    return () => {
+      app.off("chat#speak", onGetChat);
+    };
   }, []);
 
   return (

@@ -1,6 +1,7 @@
 * {
   user-select: none;
   box-sizing: border-box;
+  font-weight: bold;
 }
 :root {
   --color-purple-primary: #2b0048;
@@ -36,6 +37,153 @@ h6 {
   font-weight: bold;
   font-size: 16px;
   margin: 0;
+}
+
+/* Loading Scene */
+.loading_on,
+.loading_off {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-color: white;
+  transition: 0.3s;
+}
+
+.loading_on {
+  opacity: 1;
+  visibility: visible;
+}
+.loading_off {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading_on .percentage {
+  transition: 1s;
+}
+
+/* Entry Scene */
+
+.scene_entry {
+  pointer-events: auto;
+}
+
+.user_info_button {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--color-purple-primary);
+  border-radius: 50%;
+  background-color: var(--color-yellow-primary);
+  border: 2px solid var(--color-purple-primary);
+}
+
+.user_info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 8px;
+  color: var(--color-purple-primary);
+  padding: 8px;
+  background-color: #fff;
+}
+.username_title {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.my_username {
+  background-color: var(--color-yellow-primary);
+  padding: 4px;
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 4px;
+}
+
+.need_login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px;
+  color: var(--color-purple-primary);
+  text-align: center;
+  border-radius: 8px;
+  border: 2px solid var(--color-purple-primary);
+  background-color: #fff;
+}
+
+.join_hall_request {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px;
+  color: var(--color-purple-primary);
+  text-align: center;
+  border-radius: 8px;
+  border: 2px solid var(--color-purple-primary);
+  background-color: #fff;
+}
+.request_title {
+  margin-bottom: 8px;
+}
+.request_button {
+  padding: 4px;
+  background-color: var(--color-yellow-primary);
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 4px;
+}
+.close_button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-left: 4px;
+  background-color: var(--color-purple-primary);
+  color: #fff;
+  font-weight: bold;
+}
+
+.login_form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 8px;
+  border-radius: 12px;
+  background-color: #fff;
+  color: var(--color-purple-primary);
+  border: 2px solid var(--color-purple-primary);
+}
+.login_form > img {
+  margin-bottom: 8px;
+}
+
+.login_guest {
+  display: block;
+  margin: 0 auto;
+  padding: 8px;
+  border: 2px solid var(--color-purple-primary);
+  color: var(--color-purple-primary);
+  background-color: var(--color-yellow-primary);
+  border-radius: 8px;
+}
+
+/* Hall Scene */
+.scene_hall {
+  pointer-events: auto;
 }
 
 /* LOGIN VIEW */
@@ -75,14 +223,6 @@ h6 {
   content: "";
   position: absolute;
   /* background-color: #2b0048; */
-}
-.login_form {
-  text-align: center;
-  padding: 20px;
-  border-radius: 24px;
-}
-.login_form > img {
-  margin-bottom: 20px;
 }
 .login_canvas {
   position: absolute;
@@ -462,6 +602,9 @@ h6 {
 }
 
 .right_top {
+  position: absolute;
+  top: 8px;
+  right: 8px;
   display: flex;
   gap: 8px;
 }
