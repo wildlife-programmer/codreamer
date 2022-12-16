@@ -1,5 +1,6 @@
 class HallKeyboardController extends pc.ScriptType {
   initialize() {
+    this.root = this.app.root.findByTag("scene_hall")[0];
     const app = this.app;
 
     this.inputTarget = null;
@@ -19,7 +20,7 @@ class HallKeyboardController extends pc.ScriptType {
     app.on("move#disable", this.handleMove, this);
     app.on("move#able", this.handleMove, this);
 
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       app.off("move#disable", this.handleMove, this);
       app.off("localPlayer#init", this.initInputTarget, this);
 

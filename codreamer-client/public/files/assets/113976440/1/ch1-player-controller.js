@@ -10,7 +10,6 @@ class Ch1PlayerController extends pc.ScriptType {
     }
 
     onTriggerEnter(contact) {
-        console.log("contact", contact);
         if (contact.tags.has("goal")) {
             contact.destroy();
             this.app.ch1_gm.state = END;

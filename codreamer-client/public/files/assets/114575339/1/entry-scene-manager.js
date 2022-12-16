@@ -3,7 +3,7 @@ class EntrySceneManager extends pc.ScriptType {
     this.root = this.app.root.findByName("Root");
     this.app.fire("scene_init", this.sceneName);
     this.app.on("scene_change", this.changeScene, this);
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       console.log("destroyed");
       this.app.off("scene_change", this.changeScene, this);
     });
@@ -23,7 +23,6 @@ class EntrySceneManager extends pc.ScriptType {
             if (err) {
               console.error(err);
             } else {
-              this.app.fire("loading", false);
               oldHierarchy.destroy();
             }
           }
@@ -49,7 +48,7 @@ class EntrySceneManager extends pc.ScriptType {
     }
 
     const newScene = this.app.scenes.find(targetName);
-    const oldHierarchy = this.app.root.findByName("Root");
+    const oldHierarchy = this.root;
 
     this.app.fire("loading", true, assetsTotal, assetsLoad);
   }

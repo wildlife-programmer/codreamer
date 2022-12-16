@@ -91,7 +91,11 @@ class HallPlayerController extends pc.ScriptType {
 
     return lineBreaked;
   }
-  onTriggerEnter(contact) {}
+  onTriggerEnter(contact) {
+    if (contact.tags.has("gamezone_1")) {
+      this.app.fire("gamezone", 1);
+    }
+  }
   onCollisionStart(contact) {
     if (contact.other.tags.has("floor")) {
       this.entity.canJump = true;

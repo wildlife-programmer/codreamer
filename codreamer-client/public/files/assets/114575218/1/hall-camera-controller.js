@@ -1,5 +1,6 @@
 class HallCameraController extends pc.ScriptType {
   initialize() {
+    this.root = this.app.root.findByTag("scene_hall")[0];
     this.eulers = new pc.Vec3();
     this.touchCoords = new pc.Vec2();
 
@@ -22,7 +23,7 @@ class HallCameraController extends pc.ScriptType {
 
     this.fpv = false;
     this.app.on("fpv", this.onFpv, this);
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       this.app.off("fpv", this.onFpv, this);
       app.mouse.off("mousemove", this.onMouseMove, this);
       app.mouse.off("mousedown", this.onMouseDown, this);

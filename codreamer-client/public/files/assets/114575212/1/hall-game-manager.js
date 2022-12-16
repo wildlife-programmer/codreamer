@@ -4,6 +4,7 @@ const OP_PLAYER_MOVE = 3;
 const OP_PLAYER_JUMP = 4;
 class HallGameManager extends pc.ScriptType {
   initialize() {
+    this.root = this.app.root.findByTag("scene_hall")[0];
     this.app.graphicsDevice.maxPixelRatio *= 2;
     const app = this.app;
     app.gameManager = this;
@@ -13,7 +14,7 @@ class HallGameManager extends pc.ScriptType {
     if (app.touch) {
       this.joystick.enabled = true;
     }
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       app.off("nakama_init", this.onNakamaInit, this);
       app.off("match#join_success", this.matchJoin, this);
       app.off("chat#speak", this.onChatSpeak, this);
@@ -22,15 +23,8 @@ class HallGameManager extends pc.ScriptType {
       }
     });
 
-    this._root = app.root;
     this.playerMap = new Map();
     app.fire("nakama_request");
-  }
-
-  onNakamaResponse(nakama) {
-    this.nakama = nakama;
-    this.nakama.socket.onmatchdata = this.onMatchData.bind(this);
-    this.nakama.socket.onmatchpresence = this.onMatchPresence.bind(this);
   }
 
   onNakamaInit(nakama) {
@@ -150,8 +144,10 @@ class HallGameManager extends pc.ScriptType {
   async onPlayerSpawn(op_code, data) {
     const account = await this.getAccount();
     const user_id = account.user.id;
-    if (data.user_id === user_id) this.spawnPlayer(data, true);
-    else this.spawnPlayer(data, false);
+    if (data.user_id === user_id) {
+      this.spawnPlayer(data, true);
+      this.app.fire("loading", false);
+    } else this.spawnPlayer(data, false);
   }
 
   onPlayerMove(op_code, data) {
@@ -174,7 +170,7 @@ class HallGameManager extends pc.ScriptType {
   spawnPlayer(playerInfo, self) {
     const instance = this.player_template.resource.instantiate();
     this.playerMap.set(playerInfo.user_id, instance);
-    this._root.addChild(instance);
+    this.root.addChild(instance);
     if (playerInfo.pos)
       instance.fire("move", this.int2float(playerInfo.pos), true);
     if (self) {

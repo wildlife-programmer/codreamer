@@ -42,7 +42,7 @@ const EntryScene = ({ app, account, setAccount, nakama, setNakama }) => {
             입장
           </div>
           <CancelIcon
-            onClick={() => setNeedLogin(false)}
+            onClick={() => setJoinRequest(false)}
             className="close_button"
           />
         </div>

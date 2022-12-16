@@ -1,5 +1,6 @@
 class HallMouseController extends pc.ScriptType {
   initialize() {
+    this.root = this.app.root.findByTag("scene_hall")[0];
     const app = this.app;
     app.mouseController = this;
     this.inputTarget = null;
@@ -9,7 +10,7 @@ class HallMouseController extends pc.ScriptType {
     }
 
     this.isCameraMoving = false;
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       if (app.mouse) {
         app.mouse.off(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
       }

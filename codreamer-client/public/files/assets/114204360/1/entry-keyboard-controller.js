@@ -1,20 +1,22 @@
 class EntryKeyboardController extends pc.ScriptType {
   initialize() {
+    this.root = this.app.root.findByTag("scene_entry")[0];
     this.force = new pc.Vec3(0, 0, 0);
     this.speed = 40;
+
+    this.player.canJump = true;
     this.rigid = this.player.rigidbody;
     this.model = this.player.findByTag("model")[0];
     this.temp = new pc.Vec3();
 
     if (this.app.keyboard) {
-
       this.app.keyboard.on(pc.EVENT_KEYDOWN, this.onKeyDown, this);
     }
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       if (this.app.keyboard) {
         this.app.keyboard.off(pc.EVENT_KEYDOWN, this.onKeyDown, this);
       }
-    })
+    });
   }
   update() {
     const rigid = this.rigid;
@@ -40,9 +42,10 @@ class EntryKeyboardController extends pc.ScriptType {
     }
   }
   onKeyDown(ev) {
-    if (ev.key === pc.KEY_SPACE) {
+    if (this.player.canJump && ev.key === pc.KEY_SPACE) {
+      this.player.canJump = false;
       this.rigid.applyImpulse(0, 30, 0);
-      this.model.anim.setTrigger('jump');
+      this.model.anim.setTrigger("jump");
     }
   }
 }

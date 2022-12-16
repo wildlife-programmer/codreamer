@@ -1,5 +1,6 @@
 class HallTouchController extends pc.ScriptType {
   initialize() {
+    this.root = this.app.root.findByTag("scene_hall")[0];
     this.eulers = new pc.Vec3();
     this.app.touchController = this;
     this.inputTarget = null;
@@ -20,7 +21,7 @@ class HallTouchController extends pc.ScriptType {
       this.screenRight.on("touchmove", this.onRightTouchMove, this);
       this.screenRight.on("touchend", this.onRightTouchEnd, this);
     }
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       this.app.off("localPlayer#init", this.onInitInputTarget, this);
       if (this.app.touch) {
         this.screenLeft.off(pc.EVENT_TOUCHSTART, this.onLeftTouchStart, this);
@@ -140,7 +141,6 @@ class HallTouchController extends pc.ScriptType {
   onRightTouchMove(e) {
     const dx = e.x - this.lastTouchPoint.x;
     const dy = e.y - this.lastTouchPoint.y;
-    console.log(dx, dy);
     const clampX = pc.math.clamp(dx, -30, 30);
     const clampY = pc.math.clamp(dy, -30, 30);
     if (!this.isCameraMoving) return;

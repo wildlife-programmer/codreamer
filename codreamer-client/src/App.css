@@ -39,6 +39,19 @@ h6 {
   margin: 0;
 }
 
+/* Common */
+.button_play {
+  width: 100%;
+  padding: 4px;
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 8px;
+  background-color: var(--color-yellow-primary);
+}
+
+.button_play .MuiSvgIcon-root {
+  color: var(--color-purple-primary);
+}
+
 /* Loading Scene */
 .loading_on,
 .loading_off {
@@ -185,7 +198,24 @@ h6 {
 .scene_hall {
   pointer-events: auto;
 }
-
+.gamezone_title {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.gamezone_container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 20px;
+}
+.gamezone_info {
+  margin-bottom: 12px;
+  border: 2px solid red;
+  padding: 8px;
+}
 /* LOGIN VIEW */
 
 .App {
@@ -287,7 +317,7 @@ h6 {
   width: 17rem;
   height: 16rem;
   padding: 4px;
-  transition: all .2s;
+  transition: all 0.2s;
   box-shadow: -4px 4px 12px rgb(59, 53, 53);
   border-radius: var(--border-radius-2);
   overflow-y: auto;

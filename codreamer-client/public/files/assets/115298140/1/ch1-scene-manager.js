@@ -1,6 +1,6 @@
-class HallSceneManager extends pc.ScriptType {
+class Ch1SceneManager extends pc.ScriptType {
   initialize() {
-    this.root = this.app.root.findByTag("scene_hall")[0];
+    this.root = this.app.root.findByTag("scene_chapter_1")[0];
     this.app.fire("scene_init", this.sceneName);
     this.app.on("scene_change", this.changeScene, this);
     this.root.on("destroy", () => {
@@ -23,7 +23,6 @@ class HallSceneManager extends pc.ScriptType {
             if (err) {
               console.error(err);
             } else {
-              this.app.fire("loading", false);
               oldHierarchy.destroy();
             }
           }
@@ -55,6 +54,6 @@ class HallSceneManager extends pc.ScriptType {
   }
 }
 
-pc.registerScript(HallSceneManager, "hallSceneManager");
+pc.registerScript(Ch1SceneManager, "ch1SceneManager");
 
-HallSceneManager.attributes.add("sceneName", { type: "string" });
+Ch1SceneManager.attributes.add("sceneName", { type: "string" });
