@@ -8,6 +8,8 @@ class Ch1GameManager extends pc.ScriptType {
     this.manager = this.root.findByTag("manager")[0];
     this.app.ch1_gm = this;
 
+    this.fence = this.root.findByTag("fence")[0];
+    this.goal = this.root.findByTag("goal")[0];
     this.om = this.manager.script.ch1ObstacleManager;
 
     this.state = IDLE;
@@ -33,6 +35,7 @@ class Ch1GameManager extends pc.ScriptType {
         this.state = PLAY;
         this.isPlaying = true;
         this.time = 0;
+        this.fence.enabled = false;
       } else {
         this.time += dt;
       }
@@ -43,14 +46,18 @@ class Ch1GameManager extends pc.ScriptType {
       if (this.isPlaying) {
         this.om.enabled = false;
         this.my_record = this.time;
-        console.log(this.my_record);
         this.time = 0;
         this.isPlaying = false;
+        this.app.fire("ch1#record", this.my_record);
       } else {
         if (time > 10) {
+          this.fence.enabled = true;
+          this.goal.enabled = true;
           this.player.rigidbody.teleport(0, 0, 0);
           this.startButton.enabled = true;
           this.state = IDLE;
+          this.time = 0;
+          this.my_record = 0;
         } else this.time += dt;
       }
     }

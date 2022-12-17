@@ -175,6 +175,8 @@ class HallGameManager extends pc.ScriptType {
       instance.fire("move", this.int2float(playerInfo.pos), true);
     if (self) {
       this.localPlayer = instance;
+      const playerController = this.localPlayer.script.hallPlayerController;
+      playerController.isLocalPlayer = true;
       const camera = this.localPlayer.findByTag("camera")[0];
       this.localPlayer.camera = camera;
       camera.enabled = true;
