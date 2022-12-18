@@ -2,33 +2,33 @@ const IDLE = 1;
 const READY = 2;
 const PLAY = 3;
 const END = 4;
-class Ch1GameManager extends pc.ScriptType {
+class ClimbGameManager extends pc.ScriptType {
   #game_id = "";
   initialize() {
-    this.root = this.app.root.findByTag("scene_chapter_1")[0];
-    this.screen = this.root.findByTag("ch1_screen")[0];
+    this.root = this.app.root.findByTag("game_climb")[0];
+    this.screen = this.root.findByTag("climb_screen")[0];
 
     if (window.location.host === "launch.playcanvas.com") {
       this.screen.enabled = true;
       this.startButton.element.on("click", this.handleStart, this);
     }
     this.manager = this.root.findByTag("manager")[0];
-    this.app.ch1_gm = this;
+    this.app.climb_gm = this;
 
     this.fence = this.root.findByTag("fence")[0];
     this.goal = this.root.findByTag("goal")[0];
-    this.om = this.manager.script.ch1ObstacleManager;
+    this.om = this.manager.script.climbObstacleManager;
 
     this.state = IDLE;
     this.time = 0;
     this.my_record = 0;
 
     this.isPlaying = false;
-    this.app.on("ch1#start", this.handleStart, this);
-    this.app.on("ch1#validation", this.handleValidation, this);
+    this.app.on("climb#start", this.handleStart, this);
+    this.app.on("climb#validation", this.handleValidation, this);
     this.root.on("destroy", () => {
-      this.app.off("ch1#start", this.handleStart, this);
-      this.app.off("ch1#validation", this.handleValidation, this);
+      this.app.off("climb#start", this.handleStart, this);
+      this.app.off("climb#validation", this.handleValidation, this);
     });
   }
   handleStart() {
@@ -38,7 +38,7 @@ class Ch1GameManager extends pc.ScriptType {
   handleValidation(nkm, game_id, record) {
     if (this.#game_id !== game_id || !game_id) return;
     this.#game_id = "";
-    nkm.socket.rpc("ch1_set_record", JSON.stringify({ record: record }));
+    nkm.socket.rpc("climb_set_record", JSON.stringify({ record: record }));
   }
 
   update(dt) {
@@ -68,7 +68,7 @@ class Ch1GameManager extends pc.ScriptType {
         this.#sendRecord(this.my_record);
       } else {
         if (time > 10) {
-          this.app.fire("ch1#finish");
+          this.app.fire("climb#finish");
           this.fence.enabled = true;
           this.goal.enabled = true;
           this.player.rigidbody.teleport(0, 0, 0);
@@ -82,18 +82,18 @@ class Ch1GameManager extends pc.ScriptType {
   }
   #setGameId(game_id) {
     this.#game_id = game_id;
-    this.app.fire("ch1#game_id", game_id);
+    this.app.fire("climb#game_id", game_id);
   }
   #sendRecord() {
     if (this.#game_id === "") return;
-    this.app.fire("ch1#record", this.my_record);
+    this.app.fire("climb#record", this.my_record);
   }
   #generateId(L) {
     return [...Array(L)].map(() => Math.random().toString(36)[3]).join("");
   }
 }
 
-pc.registerScript(Ch1GameManager, "ch1GameManager");
+pc.registerScript(ClimbGameManager, "climbGameManager");
 
-Ch1GameManager.attributes.add("player", { type: "entity" });
-Ch1GameManager.attributes.add("startButton", { type: "entity" });
+ClimbGameManager.attributes.add("player", { type: "entity" });
+ClimbGameManager.attributes.add("startButton", { type: "entity" });

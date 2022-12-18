@@ -1,6 +1,6 @@
-class Ch1SceneManager extends pc.ScriptType {
+class ClimbSceneManager extends pc.ScriptType {
   initialize() {
-    this.root = this.app.root.findByTag("scene_chapter_1")[0];
+    this.root = this.app.root.findByTag("game_climb")[0];
     this.app.fire("scene_init", this.sceneName);
     this.app.on("scene_change", this.changeScene, this);
     this.root.on("destroy", () => {
@@ -54,6 +54,6 @@ class Ch1SceneManager extends pc.ScriptType {
   }
 }
 
-pc.registerScript(Ch1SceneManager, "ch1SceneManager");
+pc.registerScript(ClimbSceneManager, "climbSceneManager");
 
-Ch1SceneManager.attributes.add("sceneName", { type: "string" });
+ClimbSceneManager.attributes.add("sceneName", { type: "string" });

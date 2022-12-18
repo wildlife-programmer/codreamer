@@ -41,7 +41,7 @@ function App() {
         />
       )}
       {scene === "hall" && <HallScene app={app} nakama={nakama} />}
-      {scene === "chapter_1" && <ClimbScene app={app} nakama={nakama} />}
+      {scene === "game_climb" && <ClimbScene app={app} nakama={nakama} />}
       {/* {UIState === 0 && (
           <div className="container">
             <LoginView setNakama={setNakama} app={app} setState={setUIState} />

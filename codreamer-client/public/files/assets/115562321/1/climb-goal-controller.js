@@ -1,4 +1,4 @@
-class Ch1GoalController extends pc.ScriptType {
+class ClimbGoalController extends pc.ScriptType {
   initialize() {
       this.model = this.entity.findByTag("goal_model")[0];
   }
@@ -7,4 +7,4 @@ class Ch1GoalController extends pc.ScriptType {
   }
 }
 
-pc.registerScript(Ch1GoalController, "ch1GoalController");
+pc.registerScript(ClimbGoalController, "climbGoalController");

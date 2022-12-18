@@ -1,4 +1,4 @@
-class Ch1KeyboardController extends pc.ScriptType {
+class ClimbKeyboardController extends pc.ScriptType {
     initialize() {
         this.force = new pc.Vec3(0, 0, 0);
         this.speed = 10;
@@ -23,6 +23,6 @@ class Ch1KeyboardController extends pc.ScriptType {
     }
 }
 
-pc.registerScript(Ch1KeyboardController, "ch1KeyboardController");
+pc.registerScript(ClimbKeyboardController, "climbKeyboardController");
 
-Ch1KeyboardController.attributes.add("player", { type: 'entity' })
+ClimbKeyboardController.attributes.add("player", { type: 'entity' })

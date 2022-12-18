@@ -74,6 +74,10 @@ h6 {
   color: var(--color-purple-primary);
 }
 
+.horizon {
+  border: none;
+  border-bottom: 2px solid var(--color-purple-primary);
+}
 /* Loading Scene */
 .loading_on,
 .loading_off {
@@ -222,8 +226,8 @@ h6 {
   pointer-events: auto;
 }
 .gamezone_title {
-  font-size: 18px;
   margin-bottom: 12px;
+  font-size: 24px;
 }
 .gamezone_container {
   position: absolute;
@@ -233,13 +237,26 @@ h6 {
   padding: 16px;
   background-color: #fff;
   border-radius: 20px;
-  min-width: 300px;
+  max-width: 300px;
   border: 2px solid var(--color-purple-primary);
 }
-.gamezone_info {
-  margin-bottom: 12px;
-  border: 2px solid red;
-  padding: 8px;
+.gameinfo_image {
+  border-radius: 4px;
+}
+.table_container {
+  display: flex;
+  margin-bottom: 8px;
+  color: var(--color-purple-primary);
+}
+.table_title {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 2px solid var(--color-purple-primary);
+}
+.table_body {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
 }
 
 /* Chapter 1 */
@@ -259,6 +276,8 @@ h6 {
   transform: translate(-50%, -50%);
   background-color: #fff;
 }
+
+.climb_my_record_container,
 .climb_record_container {
   display: flex;
   justify-content: space-between;
@@ -267,6 +286,9 @@ h6 {
   margin-bottom: 8px;
   border: 2px solid var(--color-purple-primary);
   border-radius: 8px;
+}
+.climb_my_record_container {
+  background-color: var(--color-yellow-primary);
 }
 .climb_record_rank {
   margin-right: 8px;
@@ -282,6 +304,9 @@ h6 {
   align-items: center;
   max-height: 200px;
   overflow-y: auto;
+}
+.climb_rankboard_body::-webkit-scrollbar {
+  display: none;
 }
 .climb_progress {
   display: flex;

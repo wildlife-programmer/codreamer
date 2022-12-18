@@ -122,6 +122,18 @@ local function add_guest_message(context, payload)
     return jsonEncode({success = success})
 end
 
+local function get_developer(context, payload)
+    local config = {{collection = "contents", key = "developer"}}
+    local storage = storageRead(config)
+    if #storage > 0 then
+        local value = storage[1].value
+        local developer = value[payload]
+        if developer ~= nil then
+            return jsonEncode({developer = developer})
+        end
+    end
+end
+
 local function climb_set_record(context, payload)
     local decoded = jsonDecode(payload)
     if decoded['record'] == nil then return end
@@ -165,6 +177,11 @@ end
 
 local function climb_get_playcount(context, payload)
     local config = {{collection = "statistics", key = "climb_game"}}
+    local stats = storageRead(config)
+    if #stats > 0 then
+        local count = stats[1].value.play_count
+        return jsonEncode({play_count = count})
+    end
 end
 
 -- local function authenticate_before(context, payload)
@@ -182,6 +199,7 @@ registerRpc(get_spaces, "get_spaces")
 registerRpc(get_guestbook, "get_guestbook")
 registerRpc(add_guest_message, "add_guest_message");
 
+registerRpc(get_developer, 'get_developer')
 -- Climb Game
 registerRpc(climb_set_record, "climb_set_record");
 registerRpc(climb_get_record, "climb_get_record");

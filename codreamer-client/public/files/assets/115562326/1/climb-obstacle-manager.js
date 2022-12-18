@@ -1,6 +1,6 @@
-class Ch1ObstacleManager extends pc.ScriptType {
+class ClimbObstacleManager extends pc.ScriptType {
   initialize() {
-    this.root = this.app.root.findByTag("scene_chapter_1")[0];
+    this.root = this.app.root.findByTag("game_climb")[0];
     this.obstacleMap = new Map();
     this.root.on("destroy", () => {
       console.log("obstacles destroy");
@@ -40,9 +40,9 @@ class Ch1ObstacleManager extends pc.ScriptType {
   }
 }
 
-pc.registerScript(Ch1ObstacleManager, "ch1ObstacleManager");
+pc.registerScript(ClimbObstacleManager, "climbObstacleManager");
 
-Ch1ObstacleManager.attributes.add("obstacle", {
+ClimbObstacleManager.attributes.add("obstacle", {
   type: "asset",
   assetType: "template",
 });

@@ -1,4 +1,4 @@
-class Ch1PlayerController extends pc.ScriptType {
+class ClimbPlayerController extends pc.ScriptType {
   initialize() {
     this.rigid = this.entity.rigidbody;
 
@@ -10,9 +10,9 @@ class Ch1PlayerController extends pc.ScriptType {
   onTriggerEnter(contact) {
     if (contact.tags.has("goal")) {
       contact.enabled = false;
-      this.app.ch1_gm.state = END;
+      this.app.climb_gm.state = END;
     }
   }
 }
 
-pc.registerScript(Ch1PlayerController, "ch1PlayerController");
+pc.registerScript(ClimbPlayerController, "climbPlayerController");

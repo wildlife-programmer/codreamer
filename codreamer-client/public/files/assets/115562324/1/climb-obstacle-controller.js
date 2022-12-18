@@ -1,8 +1,8 @@
-class Ch1ObstacleController extends pc.ScriptType {
+class ClimbObstacleController extends pc.ScriptType {
   initialize() {
-    this.root = this.app.root.findByTag("scene_chapter_1")[0];
+    this.root = this.app.root.findByTag("game_climb")[0];
     this.manager = this.app.root.findByTag("manager")[0];
-    this.om = this.manager.script.ch1ObstacleManager;
+    this.om = this.manager.script.climbObstacleManager;
     this.obstacleMap = this.om.obstacleMap;
   }
   update() {
@@ -14,4 +14,4 @@ class Ch1ObstacleController extends pc.ScriptType {
   }
 }
 
-pc.registerScript(Ch1ObstacleController, "ch1ObstacleController");
+pc.registerScript(ClimbObstacleController, "climbObstacleController");
