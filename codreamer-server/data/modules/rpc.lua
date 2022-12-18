@@ -5,6 +5,8 @@ local osDate = os.date
 local jsonEncode = nk.json_encode
 local jsonDecode = nk.json_decode
 
+local accountGetId = nk.account_get_id
+
 local matchList = nk.match_list
 local matchCreate = nk.match_create
 
@@ -13,6 +15,10 @@ local storageWrite = nk.storage_write
 
 local registerRpc = nk.register_rpc
 local runOnce = nk.run_once
+
+local leaderboardCreate = nk.leaderboard_create
+local leaderboardRecordWrite = nk.leaderboard_record_write
+local leaderboardRecordsList = nk.leaderboard_records_list
 
 local sqlQuery = nk.sql_query
 local httpRequest = nk.http_request
@@ -61,9 +67,18 @@ local function create_storage()
     end
 end
 
+local function leaderboard_create()
+    local id = "climb_game"
+    local authoritative = false
+    local sort = "asc"
+    local operator = "best"
+
+    leaderboardCreate(id, authoritative, sort, operator)
+end
 local function initialize()
     -- create_storage()
     match_create()
+    leaderboard_create()
 end
 
 local function get_guestbook()
@@ -107,6 +122,51 @@ local function add_guest_message(context, payload)
     return jsonEncode({success = success})
 end
 
+local function climb_set_record(context, payload)
+    local decoded = jsonDecode(payload)
+    if decoded['record'] == nil then return end
+    local account = accountGetId(context.user_id)
+    local username = account.user.username
+    local record = tonumber(decoded["record"]) * 1000
+
+    local success, result = pcall(leaderboardRecordWrite, "climb_game",
+                                  context.user_id, username, record)
+    if success then
+        local stats_config = {{collection = "statistics", key = "climb_game"}}
+        local stats = storageRead(stats_config)
+        if #stats > 0 then
+            local count = stats[1].value.play_count
+            stats[1].value.play_count = count + 1
+            local success_2 = pcall(storageWrite, stats)
+            if not success_2 then
+                nk.logger_warn(string.format("Update Count Error"))
+            end
+        else
+            local value = {play_count = 1}
+            stats_config[1].value = value
+            local success_2 = pcall(storageWrite, stats_config)
+            if not success_2 then
+                nk.logger_warn(string.format("Create Count Error"))
+            end
+        end
+    end
+end
+
+local function climb_get_record(context, payload)
+    local id = "climb_game"
+    local owners = {context.user_id}
+    local account = accountGetId(context.user_id)
+
+    local success, records, owner_records =
+        pcall(leaderboardRecordsList, id, owners, 100)
+
+    return jsonEncode({records = records, owner_records = owner_records})
+end
+
+local function climb_get_playcount(context, payload)
+    local config = {{collection = "statistics", key = "climb_game"}}
+end
+
 -- local function authenticate_before(context, payload)
 --     local account = payload.account
 --     if account == nil then return end
@@ -121,5 +181,10 @@ registerRpc(match_create, "match_create")
 registerRpc(get_spaces, "get_spaces")
 registerRpc(get_guestbook, "get_guestbook")
 registerRpc(add_guest_message, "add_guest_message");
+
+-- Climb Game
+registerRpc(climb_set_record, "climb_set_record");
+registerRpc(climb_get_record, "climb_get_record");
+registerRpc(climb_get_playcount, "climb_get_playcount")
 
 -- nk.register_req_before(authenticate_before, "AuthenticateCustom")

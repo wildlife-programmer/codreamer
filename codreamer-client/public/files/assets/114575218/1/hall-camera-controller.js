@@ -81,7 +81,6 @@ class HallCameraController extends pc.ScriptType {
   }
 
   onFpv(bool) {
-    console.log(bool);
     this.fpv = bool;
   }
 }

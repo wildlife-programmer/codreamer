@@ -44,7 +44,7 @@ const HallScene = ({ app, nakama }) => {
         {chatJoined && <Chat app={app} nakama={nakama} matchId={matchId} />}
         <UI app={app} />
         <GuestBook app={app} nakama={nakama} />
-        <Gamezone app={app} />
+        <Gamezone app={app} nakama={nakama} />
       </div>
     )
   );

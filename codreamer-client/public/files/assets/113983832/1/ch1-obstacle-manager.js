@@ -28,7 +28,6 @@ class Ch1ObstacleManager extends pc.ScriptType {
     obs.setPosition(randomX, 25, -45);
     this.root.addChild(obs);
     obs.rigidbody.teleport(randomX, 25, -45);
-    console.log("random X", randomX);
   }
   destroy() {
     const obstacles = this.obstacles;

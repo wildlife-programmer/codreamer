@@ -2,6 +2,8 @@ class HallSceneManager extends pc.ScriptType {
   initialize() {
     this.root = this.app.root.findByTag("scene_hall")[0];
     this.app.fire("scene_init", this.sceneName);
+    this.app.fire("guestbook#request");
+    
     this.app.on("scene_change", this.changeScene, this);
     this.root.on("destroy", () => {
       console.log("destroyed");

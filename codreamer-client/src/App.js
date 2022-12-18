@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import EntryScene from "./component/EntryScene";
 import HallScene from "./component/HallScene";
-import Chapter1Scene from "./component/Chapter1Scene";
+import ClimbScene from "./component/ClimbScene";
 import LoginView from "./component/deprecated/LoginView";
 import LobbyView from "./component/deprecated/LobbyView";
 import MainView from "./component/MainView";
@@ -41,7 +41,7 @@ function App() {
         />
       )}
       {scene === "hall" && <HallScene app={app} nakama={nakama} />}
-      {scene === "chapter_1" && <Chapter1Scene app={app} />}
+      {scene === "chapter_1" && <ClimbScene app={app} nakama={nakama} />}
       {/* {UIState === 0 && (
           <div className="container">
             <LoginView setNakama={setNakama} app={app} setState={setUIState} />

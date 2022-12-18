@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import Nakama from "../../nakama/nakama";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Dot } from "../classes";
+import { generateid } from "../utils";
 
 const LoginView = ({ setState, app, setNakama }) => {
   const loginCanvas = useRef();
@@ -30,12 +31,6 @@ const LoginView = ({ setState, app, setNakama }) => {
       console.log("err", err);
     }
   };
-  const generateid = (L) =>
-    [...Array(L)]
-      .map(() => {
-        return Math.random().toString(36)[3];
-      })
-      .join("");
 
   const guestLogin = async () => {
     try {

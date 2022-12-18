@@ -6,7 +6,7 @@ class HallKeyboardController extends pc.ScriptType {
     this.inputTarget = null;
     this.playerCamera = null;
     this.cameraScript = null;
-    this.speed = 40;
+    this.speed = 60;
     this.move_able = true;
 
     this.force = new pc.Vec3();

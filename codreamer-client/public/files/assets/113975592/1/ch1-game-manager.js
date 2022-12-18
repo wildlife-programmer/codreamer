@@ -3,8 +3,15 @@ const READY = 2;
 const PLAY = 3;
 const END = 4;
 class Ch1GameManager extends pc.ScriptType {
+  #game_id = "";
   initialize() {
     this.root = this.app.root.findByTag("scene_chapter_1")[0];
+    this.screen = this.root.findByTag("ch1_screen")[0];
+
+    if (window.location.host === "launch.playcanvas.com") {
+      this.screen.enabled = true;
+      this.startButton.element.on("click", this.handleStart, this);
+    }
     this.manager = this.root.findByTag("manager")[0];
     this.app.ch1_gm = this;
 
@@ -17,12 +24,21 @@ class Ch1GameManager extends pc.ScriptType {
     this.my_record = 0;
 
     this.isPlaying = false;
-
-    this.startButton.element.on("click", this.handleStart, this);
+    this.app.on("ch1#start", this.handleStart, this);
+    this.app.on("ch1#validation", this.handleValidation, this);
+    this.root.on("destroy", () => {
+      this.app.off("ch1#start", this.handleStart, this);
+      this.app.off("ch1#validation", this.handleValidation, this);
+    });
   }
   handleStart() {
-    this.startButton.enabled = false;
+    // this.startButton.enabled = false;
     this.state = READY;
+  }
+  handleValidation(nkm, game_id, record) {
+    if (this.#game_id !== game_id || !game_id) return;
+    this.#game_id = "";
+    nkm.socket.rpc("ch1_set_record", JSON.stringify({ record: record }));
   }
 
   update(dt) {
@@ -36,6 +52,7 @@ class Ch1GameManager extends pc.ScriptType {
         this.isPlaying = true;
         this.time = 0;
         this.fence.enabled = false;
+        this.#setGameId(this.#generateId(12));
       } else {
         this.time += dt;
       }
@@ -48,9 +65,10 @@ class Ch1GameManager extends pc.ScriptType {
         this.my_record = this.time;
         this.time = 0;
         this.isPlaying = false;
-        this.app.fire("ch1#record", this.my_record);
+        this.#sendRecord(this.my_record);
       } else {
         if (time > 10) {
+          this.app.fire("ch1#finish");
           this.fence.enabled = true;
           this.goal.enabled = true;
           this.player.rigidbody.teleport(0, 0, 0);
@@ -61,6 +79,17 @@ class Ch1GameManager extends pc.ScriptType {
         } else this.time += dt;
       }
     }
+  }
+  #setGameId(game_id) {
+    this.#game_id = game_id;
+    this.app.fire("ch1#game_id", game_id);
+  }
+  #sendRecord() {
+    if (this.#game_id === "") return;
+    this.app.fire("ch1#record", this.my_record);
+  }
+  #generateId(L) {
+    return [...Array(L)].map(() => Math.random().toString(36)[3]).join("");
   }
 }
 

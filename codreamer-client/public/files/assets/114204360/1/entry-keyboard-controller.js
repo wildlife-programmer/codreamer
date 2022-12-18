@@ -2,7 +2,7 @@ class EntryKeyboardController extends pc.ScriptType {
   initialize() {
     this.root = this.app.root.findByTag("scene_entry")[0];
     this.force = new pc.Vec3(0, 0, 0);
-    this.speed = 40;
+    this.speed = 60;
 
     this.player.canJump = true;
     this.rigid = this.player.rigidbody;
