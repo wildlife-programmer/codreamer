@@ -5,7 +5,6 @@ import SpeedClickGame from "./SpeedClickGame";
 
 const Gamezone = ({ app }) => {
   const [currentGamezone, setCurrentGamezone] = useState(0);
-
   const [SCGopen, setSCGopen] = useState(false);
 
   // Chapter 1
