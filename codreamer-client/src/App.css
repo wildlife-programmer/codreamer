@@ -290,6 +290,9 @@ h6 {
 .climb_my_record_container {
   background-color: var(--color-yellow-primary);
 }
+.climb_record_left {
+  display: flex;
+}
 .climb_record_rank {
   margin-right: 8px;
 }
