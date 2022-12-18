@@ -35,13 +35,15 @@ class HallMouseController extends pc.ScriptType {
 
     const result = this.app.systems.rigidbody.raycastFirst(from, to);
     if (result) {
-      if (result.entity.tags.has("guestbook")) {
+      const tags = result.entity.tags;
+      if (tags.has("guestbook")) {
         this.app.fire("guestbook", true);
         this.app.fire("move#disable", false);
       }
-      if (result.entity.tags.has("contributor")) {
+      if (tags.has("gamezone_2")) this.app.fire("gamezone", 2);
+      if (tags.has("contributor")) {
       }
-      if (result.entity.tags.has("proposal")) {
+      if (tags.has("proposal")) {
       }
     }
   }

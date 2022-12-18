@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import SpeedClickGame from "./SpeedClickGame";
 
 const Gamezone = ({ app }) => {
   const [currentGamezone, setCurrentGamezone] = useState(0);
+
+  const [SCGopen, setSCGopen] = useState(false);
 
   // Chapter 1
   const handleGamezone = (zone_number) => {
@@ -41,7 +44,25 @@ const Gamezone = ({ app }) => {
               <button
                 className="button_play"
                 onClick={() => {
-                  tryJoin("chapter_1");
+                  setCurrentGamezone(0);
+                }}
+              >
+                <PlayArrowIcon />
+              </button>
+            </div>
+          )}
+          {currentGamezone === 2 && (
+            <div>
+              <div className="gamezone_title">Gamezone 2</div>
+              <div className="gamezone_info">
+                <div>게임 소개 이미지 혹은 인게임 스크린샷</div>
+                <div>방문횟수</div>
+                <div>개발자</div>
+              </div>
+              <button
+                className="button_play"
+                onClick={() => {
+                  setSCGopen(true);
                   setCurrentGamezone(0);
                 }}
               >
@@ -51,6 +72,7 @@ const Gamezone = ({ app }) => {
           )}
         </div>
       )}
+      {SCGopen && <SpeedClickGame setSCGopen={setSCGopen} />}
     </>
   );
 };
