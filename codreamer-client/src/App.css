@@ -277,6 +277,49 @@ h6 {
   background-color: #fff;
 }
 
+/* SCG */
+
+.SCG_start_on {
+  display: block;
+}
+.SCG_start_off {
+  /* display: none; */
+}
+
+.SCG_step_on {
+  display: none;
+}
+.SCG_step_off {
+  display: block;
+}
+
+.sgcCell {
+  width: 50px;
+  height: 50px;  
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  border: 1px solid #000;
+}
+
+.step_1 {
+  padding: 2px;
+  display: grid; 
+  grid-gap: 4px; 
+  grid-template-columns: repeat(3, minmax(auto, 1fr));
+  border: 1px solid #000;
+}
+
+.step_2 {
+  padding: 2px;
+  display:grid; 
+  grid-gap: 4px; 
+  grid-template-columns: repeat(4, minmax(auto, 1fr));
+  border: 1px solid #000;
+}
+
+/* LOGIN VIEW */
+
 .climb_my_record_container,
 .climb_record_container {
   display: flex;

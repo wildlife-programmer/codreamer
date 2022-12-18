@@ -6,7 +6,6 @@ import SpeedClickGame from "./SpeedClickGame";
 
 const Gamezone = ({ app, nakama }) => {
   const [currentGamezone, setCurrentGamezone] = useState(0);
-
   const [SCGopen, setSCGopen] = useState(false);
 
   const handleGamezone = (zone_number) => {
