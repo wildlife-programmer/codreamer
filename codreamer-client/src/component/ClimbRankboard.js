@@ -36,8 +36,10 @@ const ClimbRankboard = ({ app, nakama, exit }) => {
                   : "climb_record_container"
               }
             >
-              <div className="climb_record_rank">{record.rank}</div>
-              <div className="climb_record_username">{record.username}</div>
+              <div className="climb_record_left">
+                <div className="climb_record_rank">{record.rank}</div>
+                <div className="climb_record_username">{record.username}</div>
+              </div>
               <div className="climb_record_score">{record.score / 1000}s</div>
             </div>
           ))
@@ -47,15 +49,17 @@ const ClimbRankboard = ({ app, nakama, exit }) => {
           </div>
         )}
       </div>
-      {myRank ? (
-        <div className="climb_my_record_container">
-          <div className="climb_record_rank">{myRank.rank}</div>
-          <div className="climb_record_username">{myRank.username}</div>
-          <div className="climb_record_score">{myRank.score / 1000}s</div>
+      <div className="climb_my_record_container">
+        <div className="climb_record_left">
+          <div className="climb_record_rank">{myRank ? myRank.rank : "-"}</div>
+          <div className="climb_record_username">
+            {myRank ? myRank.username : "-"}
+          </div>
         </div>
-      ) : (
-        <div></div>
-      )}
+        <div className="climb_record_score">
+          {myRank ? `${myRank.score / 1000}s` : "-"}
+        </div>
+      </div>
     </div>
   );
 };
