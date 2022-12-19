@@ -4,12 +4,25 @@ import CancelIcon from "@mui/icons-material/Cancel";
 const SpeedClickGame = ({ setSCGopen }) => {
   const [scgClick, setScgClick] = useState(false);
   const [step, setStep] = useState(0);
-  const [num, setNum] = useState(0);
+  const [num, setNum] = useState([0]);
   // const num1 = [1,2,3,4,5,6,7,8,9];
   // const numList = num1.map((num1, inx) => <div key={inx}>{num1}</div>)
-  // const numbers = [...Array(9).keys()];
-  // const [state, setState] = useState[(0, 0, 0, 0, 0, 0, 0, 0, 0)];
-  
+  const numbers = [...Array(9).keys()];
+  const [state, setState] = useState[(0, 0, 0, 0, 0, 0, 0, 0, 0)];
+
+  const randomize = () => {
+    if (!state) {
+      const numberCopy = numbers.map((x) => x);
+      const arr = [];
+      for (let i = 0; i <= 7; i++) {
+        const random = Math.floor(Math.random() * 9 + 1);
+        arr.push(numberCopy[random] + 1);
+        numberCopy.splice(random, 1);
+      }
+      setState({number: arr});
+    }
+  };
+
   const handleStep = () => {
     setScgClick(!scgClick);
   };
@@ -19,23 +32,24 @@ const SpeedClickGame = ({ setSCGopen }) => {
     setStep(step);
   };
 
-  const randomNumber = () => {
-    let randomIndexArray = [];
+  // const randomNumber = () => {
+  //   let randomIndexArray = [];
 
-    for (let i = 0; i < 9; i++) {
-      let randomNum = Math.floor(Math.random() * 9 + 1);
-      if (randomIndexArray.indexOf(randomNum) === -1) {
-        randomIndexArray.push(randomNum);
-      } else {
-        i--;
-      }
-    }
-    console.log(randomIndexArray);
-    return randomIndexArray;
-  };
+  //   for (let i = 0; i < 9; i++) {
+  //     let randomNum = Math.floor(Math.random() * 9 + 1);
+  //     if (randomIndexArray.indexOf(randomNum) === -1) {
+  //       randomIndexArray.push(randomNum);
+  //     } else {
+  //       i--;
+  //     }
+  //   }
+  //   console.log(randomIndexArray);
+  //   return randomIndexArray;
+  // };
 
   const handleClick = () => {
-    setNum(randomNumber());
+    // setNum(randomNumber());
+    randomize();
   };
 
   return (
@@ -68,8 +82,9 @@ const SpeedClickGame = ({ setSCGopen }) => {
               start
             </button>
             <div className="step_1">
-              <div className="sgcCell">{randomNumber()}</div>
-              <div className="sgcCell">{randomNumber()}</div>
+              <div number={state.number}></div>
+              {/* <div className="sgcCell">{randomNumber()}</div>
+              <div className="sgcCell">{randomNumber()}</div> */}
               {/* <div className="sgcCell">{randomNumber()}</div>
               <div className="sgcCell">{randomNumber()}</div>
               <div className="sgcCell">{randomNumber()}</div>
