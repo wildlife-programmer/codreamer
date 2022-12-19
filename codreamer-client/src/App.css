@@ -55,6 +55,9 @@ h6 {
   height: 40px;
 }
 .button_rankboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 40px;
   margin-right: 4px;
   color: var(--color-purple-primary);
@@ -63,6 +66,9 @@ h6 {
   border-radius: 8px;
 }
 .button_play {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex: 1;
   padding: 4px;
   border: 2px solid var(--color-purple-primary);
@@ -237,7 +243,7 @@ h6 {
   padding: 16px;
   background-color: #fff;
   border-radius: 20px;
-  max-width: 300px;
+  width: 300px;
   border: 2px solid var(--color-purple-primary);
 }
 .gameinfo_image {
