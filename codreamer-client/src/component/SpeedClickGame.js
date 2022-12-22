@@ -1,117 +1,65 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
 
-// const getNums = () => {
-//   const candidates = Array(9)
-//     .fill()
-//     .map((v, i) => (v = i + 1));
-//   const chosenNum = [];
-
-//   while (candidates.length > 0) {
-//     const mixedNum = candidates.splice(Math.floor(Math.random() * candidates.length), 1)[0];
-//     chosenNum.push(mixedNum);
-//   }
-//   console.log(chosenNum, "num");
-
-//   const lottoNum = chosenNum.slice(0, 9).sort((p, c) => p - c);
-
-//   console.log(lottoNum);
-// };
-
 const SpeedClickGame = ({ setSCGopen }) => {
-  const [scgClick, setScgClick] = useState(false);
-  const [step, setStep] = useState(0);
+  const mode_list = [3, 4, 5, 6];
+  const [page, setPage] = useState(0);
+  const [stage, setStage] = useState(0);
+  const [board, setBoard] = useState([]);
+  const [cursor, setCursor] = useState(1);
+  const [isFinished, setFinished] = useState(false);
 
-  // const getNumsMemo = useMemo(() => getNums(), []);
-  // const [lottoNum, setLottoNum] = useState(getNumsMemo);
-  // const [winBalls, setWinBalls] = useState([]);
-  // const [redo, setRedo] = useState(false);
-  // const timeouts = useRef([]);
-
-  // useEffect(() => {
-  //   for (let i = 0; i < lottoNum.length - 1; i++) {
-  //     timeouts.current[i] = setTimeout(() => {
-  //       setWinBalls((prev) => [...prev, lottoNum[i]]);
-  //     }, i * 1000);
-  //   }
-  //   // timeouts.current[6] = setTimeout(() => {
-  //   //   setRedo(true);
-  //   // }, 7000);
-  //   return () => {
-  //     timeouts.current.forEach((v) => clearTimeout(v));
-  //   };
-  // }, [timeouts.current]);
-
-  // const onClickRedo = () => {
-  //   setLottoNum(getNums());
-  //   setWinBalls([]);
-  //   // setRedo(false);
-  //   // timeouts.current = [];
-  // };
-
-  const [num, setNum] = useState([0]);
-  // let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  // let num_ary = [];
-  // const numList = nums.map((nums, idx) => <div key={idx}>{nums}</div>);
-
-  // const make_number = () => {
-  //   nums.map(function (i) {
-  //     for (let i = 0; i < 9; i += 1) {
-  //       let outed = nums.splice(Math.floor(Math.random() * (9 - i)), 1)[0];
-  //       num_ary.push(outed);
-  //     }
-  //     console.log(num_ary);
-  //   });
-  // };
-  // console.log(numList[2].key);
-
-  // const num1 = [1,2,3,4,5,6,7,8,9];
-  // const numbers = [...Array(9).keys()];
-
-  // const randomize = () => {
-  //   if (!state) {
-  //     const numberCopy = numbers.map((x) => x);
-  //     const arr = [];
-  //     for (let i = 0; i <= 7; i++) {
-  //       const random = Math.floor(Math.random() * 9 + 1);
-  //       arr.push(numberCopy[random] + 1);
-  //       numberCopy.splice(random, 1);
-  //     }
-  //     setState({number: arr});
-  //   }
-  // };
-
-  const handleStep = () => {
-    setScgClick(!scgClick);
+  const play = (mode) => {
+    setPage(1);
+    setStage(mode);
   };
 
-  const step_ = (step) => {
-    // console.log(step);
-    setStep(step);
+  const timer = () => {
+    console.log(timer);
   };
 
-  const randomNumber = () => {
-    let randomIndexArray = [];
-
-    for (let i = 0; i < 9; i++) {
-      let randomNum = Math.floor(Math.random() * 9 + 1);
-      if (randomIndexArray.indexOf(randomNum) === -1) {
-        randomIndexArray.push(randomNum);
-      } else {
-        i--;
-      }
+  const check = (number) => {
+    if (number !== cursor) return;
+    if (cursor === stage * stage) {
+      setFinished(true);
+      console.log("finished");
+      return;
     }
-    console.log(randomIndexArray);
-    return randomIndexArray;
+    setCursor(cursor + 1);
   };
 
-  const handleClick = () => {
-    setNum(randomNumber());
-    // setNum(make_number());
-    // getNums(setWinBalls);
-    // console.log(setWinBalls);
-    // console.log(randomNumber());
+  const start = () => {
+    timer();
+    console.log(start);
   };
+
+  const showBoard = (board) => {
+    const temp = Array(stage).fill(0);
+    return temp.map((_, idx) => {
+      return (
+        <div className="board_column" key={idx}>
+          {board.map((number, index) => {
+            const share = Math.floor(index / stage);
+            if (share === idx) {
+              return (
+                <div className="board_row" key={index} onClick={() => check(number)}>
+                  {number}
+                </div>
+              );
+            }
+          })}
+        </div>
+      );
+    });
+  };
+
+  useEffect(() => {
+    if (stage === 0) return;
+    const boardData = Array(stage * stage).fill(0);
+    boardData.forEach((data, index) => (boardData[index] = index + 1));
+    boardData.sort(() => Math.random() - 0.5);
+    setBoard(boardData);
+  }, [stage]);
 
   return (
     <div
@@ -125,96 +73,35 @@ const SpeedClickGame = ({ setSCGopen }) => {
         backgroundColor: "#fff",
       }}
     >
-      <button className={step ? "SCG_start_on" : "SCG_start_off"} onClick={handleStep}>
-        Speed Click Game
-      </button>
-      <div className={scgClick ? "SCG_step_off" : "SCG_step_on"}>
-        <div
-          onClick={() => {
-            step_(1);
-          }}
-        >
-          1 단계
-        </div>
-        <div
-          onClick={() => {
-            step_(2);
-          }}
-        >
-          2 단계
-        </div>
-        <div
-          onClick={() => {
-            step_(3);
-          }}
-        >
-          3 단계
-        </div>
-        <div
-          onClick={() => {
-            step_(4);
-          }}
-        >
-          4 단계
-        </div>
-        <div
-          onClick={() => {
-            step_(5);
-          }}
-        >
-          5 단계
-        </div>
-      </div>
-      <CancelIcon onClick={() => setSCGopen(false)} className="close_button" />
-      <div className="slectStep">
-        {step === 1 && (
-          <>
-            {/* <div>
-              {winBalls.map((num) => (
-                <>
-                  <div>esfd</div>
-                </>
-              ))}
-              {redo && <button onClick={redo ? onClickRedo : () => {}}>한 번 더!</button>}
-            </div> */}
-            <button className="scg_start" onClick={handleClick}>
-              start
-            </button>
-            <div className="step_1">
-              <div className="sgcCell">{randomNumber()}</div>
-              {/* <div className="sgcCell">{numList}</div> */}
-              {/* <div className="sgcCell">{numList[2]}</div> */}
-              {/* <div className="sgcCell">{num_ary[5]}</div> */}
-              {/* <div className="sgcCell">{setWinBalls}</div> */}
-              {/* <div className="sgcCell">{getNums()}</div> */}
-              {/* <div className="sgcCell">{setNum()}</div> */}
-            </div>
-          </>
-        )}
-        {step === 2 && (
-          <div className="step_2">
-            <div className="sgcCell">1</div>
-            <div className="sgcCell">2</div>
-            <div className="sgcCell">3</div>
-            <div className="sgcCell">4</div>
-            <div className="sgcCell">5</div>
-            <div className="sgcCell">6</div>
-            <div className="sgcCell">7</div>
-            <div className="sgcCell">8</div>
-            <div className="sgcCell">9</div>
-            <div className="sgcCell">10</div>
-            <div className="sgcCell">11</div>
-            <div className="sgcCell">12</div>
-            <div className="sgcCell">13</div>
-            <div className="sgcCell">14</div>
-            <div className="sgcCell">15</div>
-            <div className="sgcCell">16</div>
+      {page === 0 && (
+        <>
+          <div>Speed Click Game</div>
+          <div>메뉴판</div>
+          {mode_list.map((mode, index) => {
+            return (
+              <div key={`mode_${index}`} onClick={() => play(mode)}>
+                {mode}
+              </div>
+            );
+          })}
+          <CancelIcon onClick={() => setSCGopen(false)} className="close_button" />
+        </>
+      )}
+      {page === 1 && (
+        <>
+          <div>STAGE {stage}</div>
+          <div
+            onClick={() => {
+              start();
+            }}
+          >
+            START
           </div>
-        )}
-        {step === 3 && <div className="step_3">{step}나와랏</div>}
-        {step === 4 && <div className="step_4">{step}나와랏</div>}
-        {step === 5 && <div className="step_5">{step}나와랏</div>}
-      </div>
+          {isFinished && <div>FINISHED!</div>}
+          <div>{board.length > 0 && showBoard(board)}</div>
+          <CancelIcon onClick={() => setPage(0)} className="close_button" />
+        </>
+      )}
     </div>
   );
 };
