@@ -279,6 +279,21 @@ h6 {
 
 /* SCG */
 
+.board_column {
+  display: flex;
+}
+
+.board_row {
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #000;
+  margin: 1px;
+}
+
 .SCG_start_on {
   display: block;
 }
