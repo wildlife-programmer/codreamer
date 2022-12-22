@@ -44,7 +44,7 @@ const UserInfo = ({ app, account, setAccount, nakama, setNakama }) => {
     if (nakama) {
       (async () => {
         const received = await nakama.getAccount();
-        console.log(received);
+        // console.log(received);
         setAccount(received);
       })();
       setLoginForm(false);

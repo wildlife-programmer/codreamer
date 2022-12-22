@@ -49,7 +49,14 @@ const Gamezone = ({ app, nakama }) => {
           )}
         </div>
       )}
-      {SCGopen && <SpeedClickGame setSCGopen={setSCGopen} />}
+      {SCGopen && (
+        <SpeedClickGame
+          goMain={() => {
+            setCurrentGamezone(2);
+            setSCGopen(false);
+          }}
+        />
+      )}
     </>
   );
 };

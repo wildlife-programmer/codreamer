@@ -316,25 +316,25 @@ h6 {
 
 .sgcCell {
   width: 50px;
-  height: 50px;  
+  height: 50px;
   display: flex;
-  align-items: center; 
+  align-items: center;
   justify-content: center;
   border: 1px solid #000;
 }
 
 .step_1 {
   padding: 2px;
-  display: grid; 
-  grid-gap: 4px; 
+  display: grid;
+  grid-gap: 4px;
   grid-template-columns: repeat(3, minmax(auto, 1fr));
   border: 1px solid #000;
 }
 
 .step_2 {
   padding: 2px;
-  display:grid; 
-  grid-gap: 4px; 
+  display: grid;
+  grid-gap: 4px;
   grid-template-columns: repeat(4, minmax(auto, 1fr));
   border: 1px solid #000;
 }
@@ -654,4 +654,37 @@ h6 {
   color: var(--color-purple-primary);
   padding: 2px;
   border-radius: 50%;
+}
+
+/* Speed Click Game */
+.scg_container {
+  text-align: center;
+}
+
+.scg_stage {
+  text-align: center;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  padding: 8px ;
+  border: 2px solid var(--color-purple-primary);
+  background-color: var(--color-yellow-primary);
+}
+.board_column {
+  display: flex;
+  justify-content: center;
+}
+.board_row {
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #000;
+  margin: 1px;
+  width: 40px;
+  height: 40px;
+}
+.checked {
+  transition: 0.3s;
+  color: transparent;
+  background-color: green;
 }
