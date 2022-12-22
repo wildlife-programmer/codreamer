@@ -1,5 +1,6 @@
 class EntryTouchController extends pc.ScriptType {
   initialize() {
+    this.root = this.app.root.findByTag("scene_entry")[0];
     this.eulers = new pc.Vec3();
     this.app.touchController = this;
     this.inputTarget = null;
@@ -20,7 +21,7 @@ class EntryTouchController extends pc.ScriptType {
       this.screenRight.on("touchmove", this.onRightTouchMove, this);
       this.screenRight.on("touchend", this.onRightTouchEnd, this);
     }
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       this.app.off("localPlayer#init", this.onInitInputTarget, this);
       if (this.app.touch) {
         this.screenLeft.off(pc.EVENT_TOUCHSTART, this.onLeftTouchStart, this);

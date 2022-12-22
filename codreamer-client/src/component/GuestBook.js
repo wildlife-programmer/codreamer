@@ -45,6 +45,9 @@ const GuestBook = ({ app, nakama }) => {
     app.fire("guestbook#get", temp);
     setGuestBook(temp);
   };
+  const handleRequestGuestbook = () => {
+    getGuestBook();
+  };
 
   const handleAdd = async () => {
     if (name === "" || message === "") return;
@@ -62,12 +65,14 @@ const GuestBook = ({ app, nakama }) => {
   useEffect(() => {
     getGuestBook();
     app.on("guestbook", handleGuestBook);
+    app.on("guestbook#request", handleRequestGuestbook);
     return () => {
       const name = document.querySelector(".guestbook_name");
       const message = document.querySelector(".guestbook_message");
       name && name.blur();
       message && message.blur();
-      app.on("guestbook", handleGuestBook);
+      app.off("guestbook", handleGuestBook);
+      app.off("guestbook#request", handleRequestGuestbook);
     };
   }, []);
   return (

@@ -1,11 +1,12 @@
 class EntryGameManager extends pc.ScriptType {
   initialize() {
+    this.root = this.app.root.findByTag("scene_entry")[0];
     const app = this.app;
     if (app.touch) {
       this.joystick.enabled = true;
     }
 
-    this.on("destroy", () => {
+    this.root.on("destroy", () => {
       if (app.touch) {
         this.joystick.enabled = false;
       }

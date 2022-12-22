@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import EntryScene from "./component/EntryScene";
 import HallScene from "./component/HallScene";
+import ClimbScene from "./component/ClimbScene";
 import LoginView from "./component/deprecated/LoginView";
 import LobbyView from "./component/deprecated/LobbyView";
 import MainView from "./component/MainView";
@@ -17,9 +18,7 @@ function App() {
   const [match, setMatch] = useState();
 
   const handleScene = (scene_name) => {
-    if (scene_name === "hall") {
-      app.fire("nakama_init", nakama);
-    }
+    if (scene_name === "hall") app.fire("nakama_init", nakama);
     setScene(scene_name);
   };
 
@@ -42,6 +41,7 @@ function App() {
         />
       )}
       {scene === "hall" && <HallScene app={app} nakama={nakama} />}
+      {scene === "game_climb" && <ClimbScene app={app} nakama={nakama} />}
       {/* {UIState === 0 && (
           <div className="container">
             <LoginView setNakama={setNakama} app={app} setState={setUIState} />

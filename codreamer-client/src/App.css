@@ -39,6 +39,51 @@ h6 {
   margin: 0;
 }
 
+/* Common */
+.App {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.button_container {
+  display: flex;
+  height: 40px;
+}
+.button_rankboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  margin-right: 4px;
+  color: var(--color-purple-primary);
+  background-color: var(--color-yellow-primary);
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 8px;
+}
+.button_play {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 4px;
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 8px;
+  background-color: var(--color-yellow-primary);
+}
+
+.button_play .MuiSvgIcon-root {
+  color: var(--color-purple-primary);
+}
+
+.horizon {
+  border: none;
+  border-bottom: 2px solid var(--color-purple-primary);
+}
 /* Loading Scene */
 .loading_on,
 .loading_off {
@@ -50,6 +95,7 @@ h6 {
   z-index: 2;
   background-color: white;
   transition: 0.3s;
+  pointer-events: auto;
 }
 
 .loading_on {
@@ -185,64 +231,194 @@ h6 {
 .scene_hall {
   pointer-events: auto;
 }
-
-/* LOGIN VIEW */
-
-.App {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  overflow: hidden;
-  pointer-events: none;
-  /* background-color: #470573; */
+.gamezone_title {
+  margin-bottom: 12px;
+  font-size: 24px;
 }
-.container {
-  width: 100%;
-  height: 100%;
-  background-color: #2b0048;
-}
-.loginview,
-.lobbyview {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  text-align: center;
-  color: #fff;
-  font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.3);
-  pointer-events: auto;
-}
-.loginview::before {
-  content: "";
-  position: absolute;
-  /* background-color: #2b0048; */
-}
-.login_canvas {
+.gamezone_container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 20px;
+  width: 300px;
+  border: 2px solid var(--color-purple-primary);
 }
-.button_github_login {
+.gameinfo_image {
+  border-radius: 4px;
+}
+.table_container {
+  display: flex;
+  margin-bottom: 8px;
+  color: var(--color-purple-primary);
+}
+.table_title {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 2px solid var(--color-purple-primary);
+}
+.table_body {
   display: flex;
   align-items: center;
-  width: fit-content;
-  padding: 12px;
-  margin: 0 auto;
-  border-radius: 4px;
-  background-color: #333;
+  padding: 4px 8px;
 }
 
+/* Chapter 1 */
+.climb_container {
+  pointer-events: auto;
+}
+.climb_record {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  padding: 16px;
+  border-radius: 4px;
+  border: 2px solid var(--color-purple-primary);
+  text-align: center;
+  color: var(--color-purple-primary);
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+}
+
+/* SCG */
+
+.board_column {
+  display: flex;
+}
+
+.board_row {
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #000;
+  margin: 1px;
+}
+
+.SCG_start_on {
+  display: block;
+}
+.SCG_start_off {
+  /* display: none; */
+}
+
+.SCG_step_on {
+  display: none;
+}
+.SCG_step_off {
+  display: block;
+}
+
+.sgcCell {
+  width: 50px;
+  height: 50px;  
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  border: 1px solid #000;
+}
+
+.step_1 {
+  padding: 2px;
+  display: grid; 
+  grid-gap: 4px; 
+  grid-template-columns: repeat(3, minmax(auto, 1fr));
+  border: 1px solid #000;
+}
+
+.step_2 {
+  padding: 2px;
+  display:grid; 
+  grid-gap: 4px; 
+  grid-template-columns: repeat(4, minmax(auto, 1fr));
+  border: 1px solid #000;
+}
+
+/* LOGIN VIEW */
+
+.climb_my_record_container,
+.climb_record_container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 8px;
+}
+.climb_my_record_container {
+  background-color: var(--color-yellow-primary);
+}
+.climb_record_left {
+  display: flex;
+}
+.climb_record_rank {
+  margin-right: 8px;
+}
+.climb_record_username {
+  margin-right: 8px;
+}
+.climb_record_score {
+}
+.climb_rankboard_body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.climb_rankboard_body::-webkit-scrollbar {
+  display: none;
+}
+.climb_progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+}
+.climb_button_start {
+  position: absolute;
+  background-color: var(--color-yellow-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--color-purple-primary);
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.climb_exit {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  border: 2px solid var(--color-purple-primary);
+  color: var(--color-purple-primary);
+  border-radius: 8px;
+  background-color: var(--color-yellow-primary);
+}
+
+.climb_rankboard_container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  background-color: #fff;
+}
+.climb_rankboard_title {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
 /* CHAT */
 
 .chat_title {
@@ -272,11 +448,6 @@ h6 {
   background-color: var(--color-yellow-primary);
 }
 
-.chat_button_on {
-}
-.chat_button_off {
-}
-
 .chat_on,
 .chat_off {
   margin-bottom: 4px;
@@ -287,7 +458,7 @@ h6 {
   width: 17rem;
   height: 16rem;
   padding: 4px;
-  transition: all .2s;
+  transition: all 0.2s;
   box-shadow: -4px 4px 12px rgb(59, 53, 53);
   border-radius: var(--border-radius-2);
   overflow-y: auto;
@@ -392,65 +563,6 @@ h6 {
   background-color: rgb(59, 53, 53);
 }
 
-/* LOBBY VIEW */
-
-.lobby_canvas {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.space_list {
-  width: 100%;
-  text-align: center;
-}
-.space_list > h1 {
-  width: fit-content;
-  margin: 0 auto 24px;
-  border-top: 2px solid #fff;
-  font-size: 24px;
-}
-
-.space_body {
-  width: 50%;
-  max-width: 300px;
-  margin: 0 auto;
-}
-
-.space_container {
-  display: flex;
-  margin: 0 auto;
-  border: 2px solid #fff;
-  border-radius: 24px;
-  justify-content: space-between;
-  /* transition: 0.3s; */
-}
-/* .space_container:hover {
-  box-shadow: 0 0 100px rgba(255, 255, 0, 1);
-} */
-.space_container .square {
-  position: relative;
-  width: 100%;
-  padding-top: 100%;
-}
-
-.space_container .square .content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  transform: translate(-50%, -50%);
-}
-
 /* GuestBook */
 
 .guestbook_on,
@@ -533,130 +645,9 @@ h6 {
   font-weight: bold;
 }
 
-/* Github */
-
-.github_icon {
-  color: #fff;
-}
-
-.github_on,
-.github_off {
-  position: absolute;
-  left: 50%;
-  transition: 0.3s;
-  font-weight: bold;
-}
-
-.github_on {
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.github_off {
-  top: 100%;
-  transform: translate(-50%, 0);
-}
-.github_connect {
-  display: flex;
-  text-align: center;
-  padding: 12px;
-  border-radius: 8px;
-  border: 2px solid var(--color-purple-primary);
-  background-color: #fff;
-}
-.github_input {
-  padding: 8px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  color: var(--color-purple-primary);
-  border-radius: 4px;
-  border: 2px solid var(--color-purple-primary);
-}
-.github_input::placeholder {
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  color: var(--color-purple-primary);
-  opacity: 0.6;
-}
-
-.github_button {
-  min-width: 32px;
-  min-height: 32px;
-  margin-left: 4px;
-  padding: 4px;
-  color: var(--color-purple-primary);
-  font-weight: bold;
-  border-radius: 4px;
-  background-color: var(--color-yellow-primary);
-  border: 2px solid var(--color-purple-primary);
-}
-
-.github_close {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  margin-left: 4px;
-  background-color: var(--color-purple-primary);
-  color: #fff;
-  font-weight: bold;
-}
-
-.right_top {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  gap: 8px;
-}
-
 /* Perspective */
 
 .perspective_icon {
-  width: 40px;
-  height: 40px;
-  background-color: #fff;
-  color: var(--color-purple-primary);
-  padding: 2px;
-  border-radius: 50%;
-}
-
-/* Video Group  */
-.group_on,
-.group_off {
-  position: absolute;
-  left: 50%;
-  width: 50%;
-  max-width: 300px;
-  padding: 12px;
-  text-align: center;
-  border-radius: 8px;
-  transition: 0.3s;
-  border: 2px solid var(--color-purple-primary);
-  background-color: #fff;
-}
-.group_on {
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.group_off {
-  top: 100%;
-  transform: translate(-50%, 0);
-}
-.group_close {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  margin-left: 4px;
-  background-color: var(--color-purple-primary);
-  color: #fff;
-  font-weight: bold;
-}
-.group_icon {
   width: 40px;
   height: 40px;
   background-color: #fff;

@@ -1,11 +1,11 @@
 class HallGuestbookManager extends pc.ScriptType {
   initialize() {
     const app = this.app;
+    this.root = this.app.root.findByTag("scene_hall")[0];
+    this.pivots = this.root.findByTag("memo_pivot");
+    app.on("guestbook#get", this.getGuestBook, this);
 
-    this.pivots = app.root.findByTag("memo_pivot");
-    this.memoTemplate = app.on("guestbook#get", this.getGuestBook, this);
-
-    app.on("destroy", () => {
+    this.root.on("destroy", () => {
       app.off("guestbook#get", this.getGuestBook, this);
     });
   }
