@@ -3,33 +3,24 @@ class EntryTouchController extends pc.ScriptType {
     this.root = this.app.root.findByTag("scene_entry")[0];
     this.eulers = new pc.Vec3();
     this.app.touchController = this;
-    this.inputTarget = null;
     this.touchSpeed = 3;
     this._initposition = this.entity.getPosition().clone();
-
-    this.app.on("localPlayer#init", this.onInitInputTarget, this);
+    this.maxRadius = 80;
 
     this.screenLeft = this.app.root.findByTag("screen_left")[0].element;
-    this.screenRight = this.app.root.findByTag("screen_right")[0].element;
     this.lastTouchPoint = new pc.Vec2();
-
+    this.model = this.player.findByTag("model")[0];
+    this.rigid = this.player.rigidbody;
     if (this.app.touch) {
       this.screenLeft.on(pc.EVENT_TOUCHSTART, this.onLeftTouchStart, this);
       this.screenLeft.on(pc.EVENT_TOUCHMOVE, this.onLeftTouchMove, this);
       this.screenLeft.on(pc.EVENT_TOUCHEND, this.onLeftTouchEnd, this);
-      this.screenRight.on("touchstart", this.onRightTouchStart, this);
-      this.screenRight.on("touchmove", this.onRightTouchMove, this);
-      this.screenRight.on("touchend", this.onRightTouchEnd, this);
     }
     this.root.on("destroy", () => {
-      this.app.off("localPlayer#init", this.onInitInputTarget, this);
       if (this.app.touch) {
         this.screenLeft.off(pc.EVENT_TOUCHSTART, this.onLeftTouchStart, this);
         this.screenLeft.off(pc.EVENT_TOUCHMOVE, this.onLeftTouchMove, this);
         this.screenLeft.off(pc.EVENT_TOUCHEND, this.onLeftTouchEnd, this);
-        this.screenRight.off("touchstart", this.onRightTouchStart, this);
-        this.screenRight.off("touchmove", this.onRightTouchMove, this);
-        this.screenRight.off("touchend", this.onRightTouchEnd, this);
       }
     });
     this.delta = new pc.Vec2();
@@ -40,68 +31,32 @@ class EntryTouchController extends pc.ScriptType {
     this.screen = this.app.root.findByTag("screen")[0];
     this.scale = this.screen.screen.scale;
 
-    this.maxRadius = 80;
-    this.speed = 0.1;
-    this.isCameraMoving = false;
-    this.app.on("fpv", this.onFpv, this);
-    this.fpv = false;
-  }
-
-  onInitInputTarget(player) {
-    this.inputTarget = player;
-    this.playerCamera = player.findByTag("camera")[0];
-    this.cameraScript = this.playerCamera.script.cameraController;
-    const parent = this.playerCamera.parent;
-    this.fpvPivot = parent.findByTag("first_person")[0];
-    this.rayEnd = parent.findByTag("raycast_endpoint")[0];
-  }
-  postUpdate(dt) {
-    if (!this.inputTarget) return;
-    const originEntity = this.playerCamera.parent;
-    const targetY = this.eulers.x + 180;
-    const targetX = this.eulers.y;
-
-    const targetAngle = new pc.Vec3(-targetX, targetY, 0);
-
-    originEntity.setEulerAngles(targetAngle);
-
-    this.playerCamera.setPosition(this.getWorldPoint(this.playerCamera));
-    !this.fpv && this.playerCamera.lookAt(originEntity.getPosition());
+    this.force = new pc.Vec3();
+    this.speed = 60;
   }
 
   update(dt) {
-    if (!this.inputTarget) return;
-    const min = this.maxRadius * 0.7;
-    const worldDirection = EntryTouchController.worldDirection;
-    worldDirection.set(0, 0, 0);
+    const rigid = this.rigid;
+    const anim = this.model.anim;
+    const isWalking = anim.getBoolean("walk");
 
-    const tempDirection = EntryTouchController.tempDirection;
+    const min = this.maxRadius * 0.7;
     let x = 0;
     let z = 0;
-    let forward = this.inputTarget.forward;
-    let right = this.inputTarget.right;
 
     if (this.delta.x > min) x = 1;
     if (this.delta.x < -min) x = -1;
-    if (this.delta.y > min) z = 1;
-    if (this.delta.y < -min) z = -1;
+    if (this.delta.y > min) z = -1;
+    if (this.delta.y < -min) z = 1;
+
     if (x !== 0 || z !== 0) {
-      worldDirection.add(tempDirection.copy(forward).mulScalar(z));
-      worldDirection.add(tempDirection.copy(right).mulScalar(x));
-      worldDirection.normalize();
-
-      const pos = new pc.Vec3(worldDirection.x * dt, 0, worldDirection.z * dt);
-      pos.normalize().scale(this.speed);
-      pos.add(this.inputTarget.getPosition());
-
-      let targetY = this.eulers.x + 180;
-      let rot = new pc.Vec3(0, targetY, 0);
-
-      this.inputTarget.rigidbody.teleport(pos, rot);
-      if (this.app.frame % 15 === 0) {
-        const gm = this.app.gameManager;
-        gm.sendPlayerMove(pos);
-      }
+      this.force.set(x, 0, z).normalize().scale(this.speed);
+      const nextPos = this.player.getPosition().clone().sub(this.force);
+      this.model.lookAt(nextPos);
+      rigid.applyForce(this.force);
+      if (!isWalking) anim.setBoolean("walk", true);
+    } else {
+      if (isWalking) anim.setBoolean("walk", false);
     }
   }
 
@@ -174,3 +129,5 @@ EntryTouchController.worldDirection = new pc.Vec3();
 EntryTouchController.tempDirection = new pc.Vec3();
 
 pc.registerScript(EntryTouchController, "entryTouchController");
+
+EntryTouchController.attributes.add("player", { type: "entity" });
