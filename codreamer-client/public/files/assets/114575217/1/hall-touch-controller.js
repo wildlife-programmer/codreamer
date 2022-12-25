@@ -14,6 +14,7 @@ class HallTouchController extends pc.ScriptType {
     this.lastTouchPoint = new pc.Vec2();
 
     if (this.app.touch) {
+      this.app.touch.on(pc.EVENT_TOUCHSTART, this.onTouchStart, this);
       this.screenLeft.on(pc.EVENT_TOUCHSTART, this.onLeftTouchStart, this);
       this.screenLeft.on(pc.EVENT_TOUCHMOVE, this.onLeftTouchMove, this);
       this.screenLeft.on(pc.EVENT_TOUCHEND, this.onLeftTouchEnd, this);
@@ -112,6 +113,38 @@ class HallTouchController extends pc.ScriptType {
       if (!isWalking) anim.setBoolean("walk", true);
     } else {
       if (isWalking) anim.setBoolean("walk", false);
+    }
+  }
+  onTouchStart(ev) {
+    if (!this.inputTarget) return;
+
+    this.raycast(ev);
+  }
+  raycast(event) {
+    const ev = event.touches[0];
+    const height = this.screenLeft.height * this.scale;
+    console.log(this.screenLeft.height, this.scale, height, window.innerHeight);
+    const screenX = ev.x / this.scale;
+    const screenY = (height - ev.y) / this.scale;
+    console.log(ev);
+    const cameraEntity = this.inputTarget.camera;
+    const camera = cameraEntity.camera;
+    const from = camera.screenToWorld(ev.x, ev.y, camera.nearClip);
+    const to = camera.screenToWorld(ev.x, ev.y, camera.farClip);
+
+    const result = this.app.systems.rigidbody.raycastFirst(from, to);
+    console.log(result);
+    if (result) {
+      const tags = result.entity.tags;
+      if (tags.has("guestbook")) {
+        this.app.fire("guestbook", true);
+        this.app.fire("move#disable", false);
+      }
+      if (tags.has("gamezone_2")) this.app.fire("gamezone", 2);
+      if (tags.has("contributor")) {
+      }
+      if (tags.has("proposal")) {
+      }
     }
   }
 
