@@ -9,8 +9,8 @@ class HallTouchController extends pc.ScriptType {
 
     this.app.on("localPlayer#init", this.onInitInputTarget, this);
 
-    this.screenLeft = this.app.root.findByTag("screen_left")[0].element;
-    this.screenRight = this.app.root.findByTag("screen_right")[0].element;
+    this.screenLeft = this.root.findByTag("screen_left")[0].element;
+    this.screenRight = this.root.findByTag("screen_right")[0].element;
     this.lastTouchPoint = new pc.Vec2();
 
     if (this.app.touch) {
@@ -37,7 +37,7 @@ class HallTouchController extends pc.ScriptType {
     this.stick = this.entity.findByTag("stick")[0];
     this.nextPosition = new pc.Vec3();
 
-    this.screen = this.app.root.findByTag("screen")[0];
+    this.screen = this.root.findByTag("screen")[0];
     this.scale = this.screen.screen.scale;
 
     this.maxRadius = 80;
@@ -45,11 +45,15 @@ class HallTouchController extends pc.ScriptType {
     this.isCameraMoving = false;
     this.app.on("fpv", this.onFpv, this);
     this.fpv = false;
+
+    this.force = new pc.Vec3();
+    this.speed = 60;
   }
 
   onInitInputTarget(player) {
     this.inputTarget = player;
     this.playerCamera = player.findByTag("camera")[0];
+    this.playerModel = player.findByTag("model")[0];
     this.cameraScript = this.playerCamera.script.cameraController;
     const parent = this.playerCamera.parent;
     this.fpvPivot = parent.findByTag("first_person")[0];
@@ -71,37 +75,43 @@ class HallTouchController extends pc.ScriptType {
 
   update(dt) {
     if (!this.inputTarget) return;
+    const rigid = this.inputTarget.rigidbody;
+    const anim = this.playerModel.anim;
+    const isWalking = anim.getBoolean("walk");
     const min = this.maxRadius * 0.7;
-    const worldDirection = HallTouchController.worldDirection;
-    worldDirection.set(0, 0, 0);
-
-    const tempDirection = HallTouchController.tempDirection;
     let x = 0;
     let z = 0;
-    let forward = this.inputTarget.forward;
-    let right = this.inputTarget.right;
+    let forward = this.playerCamera.forward;
+    forward.y = 0;
+    let right = this.playerCamera.right;
+    right.y = 0;
 
-    if (this.delta.x > min) x = 1;
-    if (this.delta.x < -min) x = -1;
-    if (this.delta.y > min) z = 1;
-    if (this.delta.y < -min) z = -1;
+    const worldDirection = HallTouchController.worldDirection;
+    worldDirection.set(0, 0, 0);
+    const tempDirection = HallTouchController.tempDirection;
+
+    if (this.delta.x > min) x += 1;
+    if (this.delta.x < -min) x -= 1;
+    if (this.delta.y > min) z += 1;
+    if (this.delta.y < -min) z -= 1;
     if (x !== 0 || z !== 0) {
       worldDirection.add(tempDirection.copy(forward).mulScalar(z));
       worldDirection.add(tempDirection.copy(right).mulScalar(x));
-      worldDirection.normalize();
+      worldDirection.normalize().scale(this.speed);
+      const nextPos = this.inputTarget
+        .getPosition()
+        .clone()
+        .sub(worldDirection);
 
-      const pos = new pc.Vec3(worldDirection.x * dt, 0, worldDirection.z * dt);
-      pos.normalize().scale(this.speed);
-      pos.add(this.inputTarget.getPosition());
-
-      let targetY = this.eulers.x + 180;
-      let rot = new pc.Vec3(0, targetY, 0);
-
-      this.inputTarget.rigidbody.teleport(pos, rot);
+      this.playerModel.lookAt(nextPos);
+      rigid.applyForce(worldDirection);
       if (this.app.frame % 15 === 0) {
         const gm = this.app.gameManager;
-        gm.sendPlayerMove(pos);
+        gm.sendPlayerMove(this.inputTarget.getPosition(), nextPos);
       }
+      if (!isWalking) anim.setBoolean("walk", true);
+    } else {
+      if (isWalking) anim.setBoolean("walk", false);
     }
   }
 

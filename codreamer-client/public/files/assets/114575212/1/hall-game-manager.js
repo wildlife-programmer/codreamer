@@ -5,7 +5,7 @@ const OP_PLAYER_JUMP = 4;
 class HallGameManager extends pc.ScriptType {
   initialize() {
     this.root = this.app.root.findByTag("scene_hall")[0];
-    this.app.graphicsDevice.maxPixelRatio *= 2;
+    this.manager = this.root.findByTag("manager")[0];
     const app = this.app;
     app.gameManager = this;
     app.on("nakama_init", this.onNakamaInit, this);
@@ -13,6 +13,9 @@ class HallGameManager extends pc.ScriptType {
     app.on("chat#speak", this.onChatSpeak, this);
     if (app.touch) {
       this.joystick.enabled = true;
+    } else {
+      this.manager.script.hallMouseController.enabled = true;
+      this.manager.script.hallKeyboardController.enabled = true;
     }
     this.root.on("destroy", () => {
       app.off("nakama_init", this.onNakamaInit, this);

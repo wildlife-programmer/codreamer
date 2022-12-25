@@ -44,10 +44,10 @@ class EntryTouchController extends pc.ScriptType {
     let x = 0;
     let z = 0;
 
-    if (this.delta.x > min) x = 1;
-    if (this.delta.x < -min) x = -1;
-    if (this.delta.y > min) z = -1;
-    if (this.delta.y < -min) z = 1;
+    if (this.delta.x > min) x += 1;
+    if (this.delta.x < -min) x -= 1;
+    if (this.delta.y > min) z -= 1;
+    if (this.delta.y < -min) z += 1;
 
     if (x !== 0 || z !== 0) {
       this.force.set(x, 0, z).normalize().scale(this.speed);
@@ -125,8 +125,6 @@ class EntryTouchController extends pc.ScriptType {
     this.fpv = bool;
   }
 }
-EntryTouchController.worldDirection = new pc.Vec3();
-EntryTouchController.tempDirection = new pc.Vec3();
 
 pc.registerScript(EntryTouchController, "entryTouchController");
 
