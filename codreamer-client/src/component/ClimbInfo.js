@@ -14,7 +14,7 @@ const ClimbInfo = ({ app, nakama }) => {
 
   const getClimbPlaycount = async () => {
     const data = await nakama.socket.rpc(
-      "climb_get_playcount",
+      "get_playcount",
       JSON.stringify({ game: "climb" })
     );
     if (!data.payload) return;
