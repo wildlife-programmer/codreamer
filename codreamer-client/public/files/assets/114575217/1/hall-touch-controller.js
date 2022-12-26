@@ -122,18 +122,12 @@ class HallTouchController extends pc.ScriptType {
   }
   raycast(event) {
     const ev = event.touches[0];
-    const height = this.screenLeft.height * this.scale;
-    console.log(this.screenLeft.height, this.scale, height, window.innerHeight);
-    const screenX = ev.x / this.scale;
-    const screenY = (height - ev.y) / this.scale;
-    console.log(ev);
-    const cameraEntity = this.inputTarget.camera;
+    const cameraEntity = this.playerCamera;
     const camera = cameraEntity.camera;
     const from = camera.screenToWorld(ev.x, ev.y, camera.nearClip);
     const to = camera.screenToWorld(ev.x, ev.y, camera.farClip);
 
     const result = this.app.systems.rigidbody.raycastFirst(from, to);
-    console.log(result);
     if (result) {
       const tags = result.entity.tags;
       if (tags.has("guestbook")) {

@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
+import SCG from "./SCG";
 
-const SpeedClickGame = ({ goMain }) => {
+const SpeedClickGame = ({ goMain, nakama }) => {
   const mode_list = [3, 4, 5, 6];
   const [page, setPage] = useState(0);
   const [stage, setStage] = useState(0);
   const [board, setBoard] = useState([]);
-  const [cursor, setCursor] = useState(1);
 
   const [timer, setTimer] = useState();
   const [time, setTime] = useState(0);
   const [currentTick, setCurrentTick] = useState(0);
 
-  const [isStarted, setStarted] = useState(false);
-  const [fault, setFault] = useState(false);
+  const [game, setGame] = useState();
 
   const [countdown, setCountdown] = useState(0);
   const tick = () => {
@@ -34,7 +33,6 @@ const SpeedClickGame = ({ goMain }) => {
         if (next > 0) {
           setCountdown(countdown - 1);
         } else {
-          setStarted(true);
           start();
           setCountdown(0);
           setTime(0);
@@ -45,40 +43,29 @@ const SpeedClickGame = ({ goMain }) => {
   }, [countdown]);
 
   const play = (mode) => {
+    const newGame = new SCG(mode);
+    console.log(newGame);
+    setGame(newGame);
+
     setPage(1);
     setStage(mode);
-    setCursor(1);
   };
 
   const finish = () => {
     cancelAnimationFrame(timer);
     setTimer();
-    setCursor(1);
-    setStarted(false);
     resetBoard();
   };
 
-  const check = (number) => {
-    if (number !== cursor) {
-      setFault(true);
-      return;
-    }
-    if (number === stage * stage) {
-      finish();
-      return;
-    }
-    setCursor(cursor + 1);
-  };
   const resetBoard = () => {
     board.fill(0);
     setBoard(board);
   };
   const resetGame = () => {
+    game.finish();
     setPage(0);
     setTime(0);
     resetBoard();
-    setStarted(false);
-    setFault(false);
     setCurrentTick(0);
     cancelAnimationFrame(timer);
     setTimer();
@@ -93,9 +80,16 @@ const SpeedClickGame = ({ goMain }) => {
             if (share === idx) {
               return (
                 <div
+                  className={`scg_${number} board_row
+                  `}
                   key={`row_${index}`}
-                  onClick={() => isStarted && !fault && check(number)}
-                  className={`board_row ${number < cursor && "checked"}`}
+                  onClick={() => {
+                    const cursor = game.check(number);
+                    if (cursor === -1) {
+                      game.finish(nakama, stage, time);
+                      finish();
+                    }
+                  }}
                 >
                   {number > 0 ? number : ""}
                 </div>
@@ -122,21 +116,26 @@ const SpeedClickGame = ({ goMain }) => {
     }
   }, [currentTick]);
 
-  useEffect(() => {
-    if (fault) {
-      setTimeout(() => {
-        setFault(false);
-      }, 1000);
-    }
-  }, [fault]);
+  // useEffect(() => {
+  //   if (fault) {
+  //     setTimeout(() => {
+  //       setFault(false);
+  //     }, 1000);
+  //   }
+  // }, [fault]);
   return (
     <div className="gamezone_container">
       {page === 0 && (
         <>
-          <div className="gamezone_title">Speed Click Game</div>
+          <div className="gamezone_title">Stages</div>
           {mode_list.map((mode, index) => {
             return (
               <div
+                style={
+                  index === mode_list.length - 1
+                    ? { marginBottom: 0 }
+                    : { marginBottom: 8 }
+                }
                 className="scg_stage"
                 key={`mode_${index}`}
                 onClick={() => play(mode)}
@@ -167,10 +166,11 @@ const SpeedClickGame = ({ goMain }) => {
           <div>{time}</div>
           <div>STAGE {stage}</div>
           <div>{board.length > 0 && showBoard(board)}</div>
-          {!isStarted && (
+          {!game.isStarted && (
             <div
               onClick={() => {
-                if (isStarted) return;
+                if (game.isStarted) return;
+                game.start();
                 setCountdown(3);
               }}
             >

@@ -1,32 +1,52 @@
 import { useState, useEffect } from "react";
 import CancelIcon from "@mui/icons-material/Cancel";
 
-const ClimbRankboard = ({ app, nakama, exit }) => {
+const SpeedClickRankboard = ({ app, nakama, exit }) => {
+  const mode_list = [3, 4, 5, 6];
+  const [stage, setStage] = useState(3);
   const [myRank, setMyRank] = useState();
   const [rankData, setRankData] = useState([]);
 
-  const getRankboard = async () => {
+  const getRankboard = async (stage) => {
     const data = await nakama.socket.rpc(
       "get_leaderboard",
-      JSON.stringify({ game: "climb" })
+      JSON.stringify({ game: "speed_click", stage: stage })
     );
     if (!data.payload) return;
     const payload = JSON.parse(data.payload);
     const my_rank = payload.owner_records;
     const rank_data = payload.records;
     if (Array.isArray(my_rank)) setMyRank(my_rank[0]);
+    else setMyRank();
     if (Array.isArray(rank_data)) setRankData(rank_data);
+    else setRankData([]);
   };
+
   useEffect(() => {
     if (!nakama) return;
-    setTimeout(() => {
-      getRankboard();
-    }, 1000);
-  }, []);
+    if (!stage) return;
+    getRankboard(stage);
+  }, [stage]);
   return (
     <div className="gamezone_container">
       <CancelIcon onClick={exit} className="close_button" />
       <div className="gamezone_title">Rank Board</div>
+      <div className="mode_container">
+        {mode_list.map((mode, index) => (
+          <div
+            onClick={() => mode !== stage && setStage(mode)}
+            className="mode_title"
+            key={`rank_stage_${index}`}
+            style={
+              mode === stage
+                ? { backgroundColor: "var(--color-yellow-primary)", opacity: 1 }
+                : { opacity: 0.5 }
+            }
+          >
+            {mode}x{mode}
+          </div>
+        ))}
+      </div>
       <div className="climb_rankboard_body">
         {rankData.length > 0 ? (
           rankData.map((record) => (
@@ -64,4 +84,4 @@ const ClimbRankboard = ({ app, nakama, exit }) => {
   );
 };
 
-export default ClimbRankboard;
+export default SpeedClickRankboard;

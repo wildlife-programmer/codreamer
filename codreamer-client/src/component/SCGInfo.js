@@ -1,58 +1,52 @@
 import { useState, useEffect } from "react";
-import ClimbRankboard from "./ClimbRankboard";
+import SpeedClickRankboard from "./SpeedClickRankboard";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 
-const ClimbInfo = ({ app, nakama }) => {
-  const [climbRankboardOpen, setClimbRankboardOpen] = useState(false);
-  const [playcount, setPlaycount] = useState(0);
+const SCGInfo = ({ app, nakama, open }) => {
   const [developers, setDevelopers] = useState([]);
-
-  const tryJoin = (scene_name) => {
-    app.fire("scene_change", scene_name);
-  };
+  const [playcount, setPlaycount] = useState(0);
+  const [rankboardOpen, setRankboardOpen] = useState(false);
 
   const getPlaycount = async () => {
-    const data = await nakama.socket.rpc("get_playcount", "climb");
+    const data = await nakama.socket.rpc(
+      "get_playcount",
+      JSON.stringify({ game: "speed_click" })
+    );
     if (!data.payload) return;
     const payload = JSON.parse(data.payload);
     if (payload.play_count) setPlaycount(payload.play_count);
   };
 
   const getDeveloper = async () => {
-    const data = await nakama.socket.rpc("get_developer", "climb");
+    const data = await nakama.socket.rpc("get_developer", "speed_click");
     if (!data.payload) return;
     const payload = JSON.parse(data.payload);
     if (payload.developer) setDevelopers(payload.developer);
   };
 
   useEffect(() => {
-    if (!nakama) return;
     getPlaycount();
     getDeveloper();
   }, []);
-
-  return climbRankboardOpen ? (
-    <ClimbRankboard
+  return rankboardOpen ? (
+    <SpeedClickRankboard
       app={app}
       nakama={nakama}
       exit={() => {
-        setClimbRankboardOpen(false);
+        setRankboardOpen(false);
       }}
     />
   ) : (
-    <>
-      <div className="gamezone_title">Climb!</div>
+    <div>
+      <div className="gamezone_title">Speed Click</div>
+      <img
+        className="gameinfo_image"
+        alt="speed_click_game"
+        width="100%"
+        src="/image/speed_click_game.png"
+      />
       <div>
-        <div className="table_container">
-          <img
-            className="gameinfo_image"
-            alt="climb_game"
-            src="/image/climb_game_preview.png"
-            width="100%"
-          />
-        </div>
-
         <div className="table_container">
           <span className="table_title">Visits</span>
           <div className="table_body">{playcount}</div>
@@ -73,21 +67,17 @@ const ClimbInfo = ({ app, nakama }) => {
         <button
           className="button_rankboard"
           onClick={() => {
-            setClimbRankboardOpen(true);
+            setRankboardOpen(true);
           }}
         >
           <MilitaryTechIcon />
         </button>
-        <button
-          className="button_play"
-          onClick={() => {
-            tryJoin("game_climb");
-          }}
-        >
+        <button className="button_play" onClick={open}>
           <PlayArrowIcon />
         </button>
       </div>
-    </>
+    </div>
   );
 };
-export default ClimbInfo;
+
+export default SCGInfo;

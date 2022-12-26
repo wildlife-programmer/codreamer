@@ -68,12 +68,18 @@ local function create_storage()
 end
 
 local function leaderboard_create()
-    local id = "climb_game"
+    local ids = {
+        "climb", "speed_click_3", "speed_click_4", "speed_click_5",
+        "speed_click_6"
+    }
     local authoritative = false
     local sort = "asc"
     local operator = "best"
 
-    leaderboardCreate(id, authoritative, sort, operator)
+    for _, id in ipairs(ids) do
+        leaderboardCreate(id, authoritative, sort, operator)
+    end
+
 end
 local function initialize()
     -- create_storage()
@@ -134,17 +140,28 @@ local function get_developer(context, payload)
     end
 end
 
-local function climb_set_record(context, payload)
+local function set_leaderboard(context, payload)
     local decoded = jsonDecode(payload)
     if decoded['record'] == nil then return end
+    local game = decoded["game"]
     local account = accountGetId(context.user_id)
     local username = account.user.username
     local record = tonumber(decoded["record"]) * 1000
 
-    local success, result = pcall(leaderboardRecordWrite, "climb_game",
-                                  context.user_id, username, record)
+    local success;
+    if game == 'climb' then
+        success = pcall(leaderboardRecordWrite, decoded["game"],
+                        context.user_id, username, record)
+    elseif game == "speed_click" then
+        success = pcall(leaderboardRecordWrite,
+                        decoded["game"] .. "_" .. decoded["stage"],
+                        context.user_id, username, record)
+
+    end
     if success then
-        local stats_config = {{collection = "statistics", key = "climb_game"}}
+        local stats_config = {
+            {collection = "statistics", key = decoded["game"]}
+        }
         local stats = storageRead(stats_config)
         if #stats > 0 then
             local count = stats[1].value.play_count
@@ -164,8 +181,17 @@ local function climb_set_record(context, payload)
     end
 end
 
-local function climb_get_record(context, payload)
-    local id = "climb_game"
+local function get_leaderboard(context, payload)
+    local decoded = jsonDecode(payload)
+    local game = decoded["game"]
+    local id = "";
+    if game == "climb" then
+        id = game
+    elseif game == "speed_click" then
+        local stage = decoded['stage']
+        id = game .. "_" .. stage
+    end
+
     local owners = {context.user_id}
     local account = accountGetId(context.user_id)
 
@@ -175,8 +201,17 @@ local function climb_get_record(context, payload)
     return jsonEncode({records = records, owner_records = owner_records})
 end
 
-local function climb_get_playcount(context, payload)
-    local config = {{collection = "statistics", key = "climb_game"}}
+local function get_playcount(context, payload)
+    local decoded = jsonDecode(payload)
+    local game = decoded["game"]
+    local config;
+    if game == "climb" then
+        config = {{collection = "statistics", key = game}}
+    elseif game == "speed_click" then
+        local stage = decoded['stage']
+        config = {{collection = "statistics", key = game}}
+    end
+
     local stats = storageRead(config)
     if #stats > 0 then
         local count = stats[1].value.play_count
@@ -201,8 +236,8 @@ registerRpc(add_guest_message, "add_guest_message");
 
 registerRpc(get_developer, 'get_developer')
 -- Climb Game
-registerRpc(climb_set_record, "climb_set_record");
-registerRpc(climb_get_record, "climb_get_record");
-registerRpc(climb_get_playcount, "climb_get_playcount")
+registerRpc(set_leaderboard, "set_leaderboard");
+registerRpc(get_leaderboard, "get_leaderboard");
+registerRpc(get_playcount, "get_playcount")
 
 -- nk.register_req_before(authenticate_before, "AuthenticateCustom")

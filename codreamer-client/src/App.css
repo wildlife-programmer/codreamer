@@ -247,7 +247,9 @@ h6 {
   border: 2px solid var(--color-purple-primary);
 }
 .gameinfo_image {
-  border-radius: 4px;
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 8px;
+  margin-bottom: 4px;
 }
 .table_container {
   display: flex;
@@ -255,13 +257,15 @@ h6 {
   color: var(--color-purple-primary);
 }
 .table_title {
+  height: fit-content;
   padding: 4px 8px;
   border-radius: 8px;
   border: 2px solid var(--color-purple-primary);
 }
 .table_body {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   padding: 4px 8px;
 }
 
@@ -284,22 +288,33 @@ h6 {
 }
 
 /* SCG */
-
+.mode_container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.mode_title {
+  padding: 8px;
+  color: var(--color-purple-primary);
+  border: 2px solid var(--color-purple-primary);
+  border-radius: 8px;
+  transition: 0.3s;
+}
 .board_column {
   display: flex;
+  justify-content: center;
 }
 
 .board_row {
   padding: 8px;
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 2px solid #000;
   margin: 1px;
 }
-
 .SCG_start_on {
   display: block;
 }
@@ -374,13 +389,6 @@ h6 {
 }
 .climb_rankboard_body::-webkit-scrollbar {
   display: none;
-}
-.climb_progress {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80px;
-  height: 80px;
 }
 .climb_button_start {
   position: absolute;
@@ -664,24 +672,9 @@ h6 {
 .scg_stage {
   text-align: center;
   border-radius: 8px;
-  margin-bottom: 8px;
-  padding: 8px ;
+  padding: 8px;
   border: 2px solid var(--color-purple-primary);
   background-color: var(--color-yellow-primary);
-}
-.board_column {
-  display: flex;
-  justify-content: center;
-}
-.board_row {
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid #000;
-  margin: 1px;
-  width: 40px;
-  height: 40px;
 }
 .checked {
   transition: 0.3s;

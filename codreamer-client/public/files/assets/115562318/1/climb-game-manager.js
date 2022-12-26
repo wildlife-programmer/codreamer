@@ -38,7 +38,10 @@ class ClimbGameManager extends pc.ScriptType {
   handleValidation(nkm, game_id, record) {
     if (this.#game_id !== game_id || !game_id) return;
     this.#game_id = "";
-    nkm.socket.rpc("climb_set_record", JSON.stringify({ record: record }));
+    nkm.socket.rpc(
+      "set_leaderboard",
+      JSON.stringify({ game: "climb", record: record })
+    );
   }
 
   update(dt) {

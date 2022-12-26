@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ClimbInfo from "./ClimbInfo";
+import SCGInfo from "./SCGInfo";
 import CancelIcon from "@mui/icons-material/Cancel";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SpeedClickGame from "./SpeedClickGame";
 
 const Gamezone = ({ app, nakama }) => {
@@ -19,6 +19,8 @@ const Gamezone = ({ app, nakama }) => {
     };
   }, []);
 
+  useEffect(() => {}, [currentGamezone]);
+
   return (
     <>
       {currentGamezone !== 0 && (
@@ -29,28 +31,20 @@ const Gamezone = ({ app, nakama }) => {
           />
           {currentGamezone === 1 && <ClimbInfo app={app} nakama={nakama} />}
           {currentGamezone === 2 && (
-            <div>
-              <div className="gamezone_title">Gamezone 2</div>
-              <div>
-                <div>게임 소개 이미지 혹은 인게임 스크린샷</div>
-                <div>방문횟수</div>
-                <div>개발자</div>
-              </div>
-              <button
-                className="button_play"
-                onClick={() => {
-                  setSCGopen(true);
-                  setCurrentGamezone(0);
-                }}
-              >
-                <PlayArrowIcon />
-              </button>
-            </div>
+            <SCGInfo
+              app={app}
+              nakama={nakama}
+              open={() => {
+                setCurrentGamezone(0);
+                setSCGopen(true);
+              }}
+            />
           )}
         </div>
       )}
       {SCGopen && (
         <SpeedClickGame
+          nakama={nakama}
           goMain={() => {
             setCurrentGamezone(2);
             setSCGopen(false);
