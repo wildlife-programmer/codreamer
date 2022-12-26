@@ -12,14 +12,17 @@ const ClimbInfo = ({ app, nakama }) => {
     app.fire("scene_change", scene_name);
   };
 
-  const getPlaycount = async () => {
-    const data = await nakama.socket.rpc("get_playcount", "climb");
+  const getClimbPlaycount = async () => {
+    const data = await nakama.socket.rpc(
+      "climb_get_playcount",
+      JSON.stringify({ game: "climb" })
+    );
     if (!data.payload) return;
     const payload = JSON.parse(data.payload);
     if (payload.play_count) setPlaycount(payload.play_count);
   };
 
-  const getDeveloper = async () => {
+  const getClimbDeveloper = async () => {
     const data = await nakama.socket.rpc("get_developer", "climb");
     if (!data.payload) return;
     const payload = JSON.parse(data.payload);
@@ -28,8 +31,8 @@ const ClimbInfo = ({ app, nakama }) => {
 
   useEffect(() => {
     if (!nakama) return;
-    getPlaycount();
-    getDeveloper();
+    getClimbPlaycount();
+    getClimbDeveloper();
   }, []);
 
   return climbRankboardOpen ? (
