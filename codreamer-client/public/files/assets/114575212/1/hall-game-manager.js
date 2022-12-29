@@ -88,7 +88,7 @@ class HallGameManager extends pc.ScriptType {
   sendPlayerSpawn(match_id) {
     setTimeout(async () => {
       await this.sendMatchState(OP_PLAYER_SPAWN, {});
-    }, 0);
+    }, 1000);
   }
 
   sendPlayerMove(pos, direction, ext = false) {

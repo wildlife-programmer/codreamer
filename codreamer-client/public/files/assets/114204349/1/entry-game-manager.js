@@ -12,8 +12,6 @@ class EntryGameManager extends pc.ScriptType {
     this.root.on("destroy", () => {
       if (app.touch) {
         this.joystick.enabled = false;
-      } else {
-        manager.script.entryKeyboardController.enabled = false;
       }
     });
   }
