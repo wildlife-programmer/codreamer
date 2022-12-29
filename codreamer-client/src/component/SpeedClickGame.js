@@ -16,8 +16,9 @@ const SpeedClickGame = ({ goMain, nakama }) => {
 
   const [countdown, setCountdown] = useState(0);
   const tick = () => {
-    setCurrentTick(window.performance.now());
-    const req = requestAnimationFrame(tick);
+    const req = setInterval(() => {
+      setCurrentTick(window.performance.now());
+    }, 1);
     setTimer(req);
   };
 
@@ -52,7 +53,7 @@ const SpeedClickGame = ({ goMain, nakama }) => {
   };
 
   const finish = () => {
-    cancelAnimationFrame(timer);
+    clearInterval(timer);
     setTimer();
     resetBoard();
   };
